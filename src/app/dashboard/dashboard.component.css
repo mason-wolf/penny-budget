@@ -1,0 +1,31 @@
+.balanceInfo {
+    margin-top: 25px;
+    padding: 2em;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+.budgetProgress {
+    margin-top: 25px;
+    padding: 2em;
+    border: 1px solid #ccc;
+}
+
+h2 {
+    font-weight: 100;
+}
+
+.budgetItem {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    height: 15px;
+    width: 100%;
+    border: 1px solid #ccc;
+}
+
+.budgetStatus {
+    height: 15px;
+    color:white;
+    background-color: blue;
+    max-width: 100%;
+}

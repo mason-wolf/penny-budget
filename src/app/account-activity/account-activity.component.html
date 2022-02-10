@@ -1,0 +1,30 @@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-7 border m-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background-color: white;">
+                  <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Account Activity</li>
+                </ol>
+              </nav>
+            <h1>Account Activity</h1>
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 m-1" style="width:100%;">
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>Date</th>
+                    <td mat-cell *matCellDef="let transaction"> {{ transaction.date }} </td>
+                </ng-container>
+                <ng-container matColumnDef="category">
+                    <th mat-header-cell *matHeaderCellDef>Category</th>
+                    <td mat-cell *matCellDef="let transaction"> {{ transaction.category }} </td>
+                </ng-container>
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef>Amount</th>
+                    <td mat-cell *matCellDef="let transaction"> {{ transaction.amount | currency }} </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[10, 25, 50]"style="margin-top:25px;"></mat-paginator>
+        </div>
+    </div>
+</div>
