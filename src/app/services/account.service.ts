@@ -26,4 +26,20 @@ export class AccountService {
   getTransactionHistory(username: string) {
     return this.httpClient.post(environment.apiEndpoint + "/getTransactionHistory", { "username" : username });
   }
+
+  addTransaction(transaction: Transaction) {
+    return this.httpClient.post(environment.apiEndpoint + '/addTransaction', { transaction });
+  }
+
+  deleteTransaction(transaction) {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: {
+        transaction: transaction
+      }
+    }
+    return this.httpClient.delete(environment.apiEndpoint + '/deleteTransaction', options);
+  }
 }

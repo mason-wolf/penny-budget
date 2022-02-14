@@ -1,3 +1,4 @@
+from models.transaction import Transaction
 from dao import account_dao
 
 def getAccount(username):
@@ -11,3 +12,9 @@ def getTotalSpentByCategory(username, month, year):
 
 def getTransactionHistory(username):
     return account_dao.getTransactionHistory(username)
+
+def addTransaction(transaction: Transaction):
+    return account_dao.addTransaction(transaction)
+
+def deleteTransaction(transactionId):
+    return account_dao.deleteTransaction(transactionId)

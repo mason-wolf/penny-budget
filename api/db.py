@@ -23,3 +23,11 @@ def executeQuery(query, params):
     cursor.close()
     conn.close()
     return result
+
+def executeCUD(query, params):
+    conn = getConnection()
+    cursor = conn.cursor()
+    cursor.execute(query, (params))
+    conn.commit()
+    cursor.close()
+    conn.close()

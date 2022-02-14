@@ -1,3 +1,4 @@
+import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -15,7 +16,7 @@ export class AccountActivityComponent implements OnInit {
   currentUser: string;
 
   dataSource = new MatTableDataSource();
-  displayedColumns : string[] = ["date", "category", "amount"]
+  displayedColumns : string[] = ["date", "category", "amount", "deleteAction"]
   transactions : Transaction[] = []
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -42,6 +43,14 @@ export class AccountActivityComponent implements OnInit {
       width: '40%'
     });
   }
+
+  deleteTransaction(transaction) {
+    this.accountService.deleteTransaction(transaction).subscribe(resp => {
+      this.transactions = [];
+      this.getTransactionHistory();
+    })
+  }
+
   ngOnInit(): void {
   }
 

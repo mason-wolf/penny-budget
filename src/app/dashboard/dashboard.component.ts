@@ -1,8 +1,7 @@
-import { formatCurrency } from '@angular/common';
+import { formatCurrency, formatDate } from '@angular/common';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { isNumber } from '@ng-bootstrap/ng-bootstrap/util/util';
 import { AccountService } from '../services/account.service';
 import { BudgetService } from '../services/budget.service';
 import { Budget } from '../shared/models/budget.model';
@@ -16,7 +15,8 @@ import { Transaction } from '../shared/models/transaction.model';
 export class DashboardComponent implements OnInit {
 
   currentUser;
-  balance : string;
+  balance: string;
+  accountName: string;
   amountEarned: string;
   amountSpent: string;
   date = new Date();
@@ -52,20 +52,23 @@ export class DashboardComponent implements OnInit {
     this.getBudget();
   }
 
+  // Get account balance and account name.
   getAccount() {
-    this.accountService.getAccount(this.currentUser).subscribe(value => {
-      this.balance = formatCurrency(value["balance"] as number, 'en', '$');
+    this.accountService.getAccount(this.currentUser).subscribe(resp => {
+      this.balance = formatCurrency(resp["balance"] as number, 'en', '$');
+      this.accountName = resp["accountName"];
     })
   }
 
+  // Get income earned this month.
   getIncome() {
-    this.accountService.getAmountEarned(this.currentUser, 1, this.year).subscribe(value => {
-      this.amountEarned = formatCurrency(value as number, 'en', '$');
+    this.accountService.getAmountEarned(this.currentUser, this.month, this.year).subscribe(resp => {
+      this.amountEarned = formatCurrency(resp as number, 'en', '$');
     })
   }
 
   getSpent() {
-    this.accountService.getTotalSpentByCategory(this.currentUser, 1, this.year).subscribe(data => {
+    this.accountService.getTotalSpentByCategory(this.currentUser, this.month, this.year).subscribe(data => {
 
       let totalSpent = 0;
       if (data == 0) {
@@ -114,8 +117,26 @@ export class DashboardComponent implements OnInit {
       this.incomeError = "Please enter a valid amount.";
     }
     else {
-      console.log(this.incomeForm.get('incomeAmount').value);
-      console.log(this.incomeForm.get('incomeDate').value);
+      this.incomeAmount = this.incomeForm.get('incomeAmount').value;
+      this.incomeDate = this.incomeForm.get('incomeDate').value;
+
+      if (this.incomeDate == null) {
+        let today = new Date();
+        this.incomeDate = formatDate(today, 'yyyy-MM-dd', 'en-us');
+      }
+
+      let transaction = new Transaction();
+      transaction.id = null;
+      transaction.owner = this.currentUser;
+      transaction.amount = this.incomeAmount;
+      transaction.archived = 0;
+      transaction.date = this.incomeDate;
+      transaction.category = 'Income';
+      transaction.account = null;
+      this.accountService.addTransaction(transaction).subscribe(res => {
+        this.getAccount();
+        this.getIncome();
+      })
     }
   }
 

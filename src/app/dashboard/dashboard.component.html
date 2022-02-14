@@ -16,6 +16,9 @@
         </div>
 
         <div class="col-md-7 order-1 order-md-1 mr-1 budgetProgress">
+            <div class="d-flex justify-content-between" style="margin-bottom: 25px;">
+                    <button class="ml-auto">Add Transaction</button>
+            </div>
             <div *ngFor="let budget of budgetItems">
                 <div *ngFor="let transaction of transactions">
                     <div *ngIf="budget.category == transaction.category">
@@ -62,7 +65,7 @@
             </div>
             <span style="color:red;width:100%;padding:1em;"> {{ incomeError }} </span>
             <div class="col-12 mt-2">
-                <button style="float:right;" (click)="addIncome()">Add</button>
+                <button style="float:right;" (click)="addIncome()" matDialogClose="yes">Add</button>
             </div>
         </form>
     </div>

@@ -1,12 +1,14 @@
+from http.client import OK
+from inspect import trace
 from re import sub
 from flask import Flask, request
 from flask import json
 from flask.json import jsonify
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
+from models.transaction import Transaction
 
 import budget
 import account
@@ -68,6 +70,31 @@ def getTransactionHistory():
     username = payload["username"]
     return jsonify(account.getTransactionHistory(username))
 
+@app.route('/addTransaction', methods=['POST'])
+@jwt_required()
+def addTransaction():
+    payload = request.data
+    payload = json.loads(payload)
+    transaction = JSONToTransaction(payload)
+    return jsonify(account.addTransaction(transaction))
+
+def JSONToTransaction(json):
+    transaction = Transaction()
+    transaction.id = json['transaction']['id']
+    transaction.owner = json['transaction']["owner"]
+    transaction.amount = json['transaction']["amount"]
+    transaction.archived = json['transaction']["archived"]
+    transaction.date = json['transaction']["date"]
+    transaction.category = json['transaction']["category"]
+    transaction.account = json['transaction']["account"]
+    return transaction
+@app.route('/deleteTransaction', methods=['DELETE'])
+@jwt_required()
+def deleteTransaction():
+    payload = request.data
+    payload = json.loads(payload)
+    transaction = JSONToTransaction(payload)
+    return jsonify(account.deleteTransaction(transaction))
 # End Account Endpoints
 
 # Start Budget Endpoints
