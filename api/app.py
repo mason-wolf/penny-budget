@@ -88,6 +88,7 @@ def JSONToTransaction(json):
     transaction.category = json['transaction']["category"]
     transaction.account = json['transaction']["account"]
     return transaction
+
 @app.route('/deleteTransaction', methods=['DELETE'])
 @jwt_required()
 def deleteTransaction():
@@ -107,6 +108,15 @@ def getBudgetByCategory():
     month = payload["month"]
     year = payload["year"]
     return jsonify(budget.getBudgetByCategory(username, month, year))
+
+@app.route('/getBudgetCategories', methods=["POST"])
+@jwt_required()
+def getBudgetCategories():
+    payload = request.data
+    payload = json.loads(payload)
+    username = payload["username"]
+    return jsonify(budget.getBudgetCategories(username))
+    
 # End Budget Endpoints
 
 if __name__ == '__main__':

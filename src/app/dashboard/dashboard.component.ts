@@ -14,7 +14,7 @@ import { Transaction } from '../shared/models/transaction.model';
 })
 export class DashboardComponent implements OnInit {
 
-  currentUser;
+  currentUser: string;
   balance: string;
   accountName: string;
   amountEarned: string;
@@ -30,7 +30,17 @@ export class DashboardComponent implements OnInit {
   incomeDate: string;
   incomeForm: FormGroup;
 
+  transactionAmount: number;
+  transactionDate: string;
+  transactionCategory: string;
+  transactionForm: FormGroup;
+
+  categoryName: string;
+  categories : [] = [];
+
   @ViewChild('addIncomeDialog') addIncomeDialog: TemplateRef<any>;
+  @ViewChild('addTransactionDialog') addTransactionDialog: TemplateRef<any>;
+  @ViewChild('manageCategoryDialog') manageCategoryDialog: TemplateRef<any>;
 
   constructor(private budgetService: BudgetService, private accountService: AccountService, private dialog: MatDialog) {
 
@@ -38,6 +48,7 @@ export class DashboardComponent implements OnInit {
     this.year = this.date.getFullYear();
     this.currentUser = sessionStorage.getItem("username");
 
+    // Add income form.
     this.incomeForm = new FormGroup({
       "incomeAmount" : new FormControl(this.incomeAmount, [
         Validators.required,
@@ -45,7 +56,20 @@ export class DashboardComponent implements OnInit {
       ]),
       "incomeDate": new FormControl(this.incomeDate)
     }
-    )
+    );
+
+    // Add transaction form.
+    this.transactionForm = new FormGroup({
+      "transactionAmount" : new FormControl(this.transactionAmount, [
+        Validators.required, 
+        Validators.pattern("^[0-9].*$")
+      ]),
+      "transactionCategory": new FormControl(this.transactionCategory, [
+        Validators.required
+      ]),
+      "transactionDate": new FormControl(this.transactionDate)
+    });
+
     this.getAccount();
     this.getIncome();
     this.getSpent();
@@ -138,6 +162,21 @@ export class DashboardComponent implements OnInit {
         this.getIncome();
       })
     }
+  }
+
+  showTransactionDialog() {
+    let transactionDialog = this.dialog.open(this.addTransactionDialog, {
+      width: '30%'
+    })
+  }
+
+  showCategoryDialog() {
+    let categoryDialog = this.dialog.open(this.manageCategoryDialog, {
+      width: '30%'
+    })
+  }
+  addTransaction() {
+
   }
 
   ngOnInit(): void {

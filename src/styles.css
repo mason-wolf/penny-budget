@@ -2,7 +2,7 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-input {
+input, select {
     width: 100%;
     font-size: 18px;
     font-weight: 200;

@@ -6,3 +6,8 @@ def getBudgetByCategory(username, month, year):
     result = db.executeQuery(query, (username, month, year))
     return result
 
+def getBudgetCategories(username):
+    query = "select * from budgetCategories where owner=%s order by title"
+    result = db.executeQuery(query, (username,))
+    return result
+
