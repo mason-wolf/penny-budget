@@ -141,7 +141,6 @@ export class DashboardComponent implements OnInit {
   getBudget() {
     this.budgetItems = [];
     this.budgetService.getBudgetByCategory(this.currentUser, this.month, this.year).subscribe(data => {
-      console.log(data);
       Object.keys(data).forEach((key) => {
         let budget = new Budget();
         budget.amount = data[key].amount;
@@ -206,15 +205,16 @@ export class DashboardComponent implements OnInit {
 
   showTransactionDialog() {
     this.dialog.open(this.addTransactionDialog, {
-      minWidth: '30%',
+      minWidth: '40%',
       maxWidth: '100%'
     })
   }
 
   showCategoryDialog() {
     this.dialog.open(this.manageCategoryDialog, {
-      minWidth: '30%',
-      maxWidth: '100%'
+      minWidth: '40%',
+      maxWidth: '100%',
+      minHeight: '560px'
     })
   }
 

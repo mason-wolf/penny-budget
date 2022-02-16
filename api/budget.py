@@ -9,6 +9,10 @@ def getBudgetByCategory(username, month, year):
 def getBudgetCategories(username):
     return budget_dao.getBudgetCategories(username)
 
+# Gets total amount budgeted for this month.
+def getTotalBudget(username):
+    return budget_dao.getTotalBudget(username)
+    
 def addCategory(username, title):
     return budget_dao.addCategory(username, title)
 
@@ -20,3 +24,6 @@ def getActiveBudgets(username):
 
 def addBudget(budget: Transaction):
     return budget_dao.addBudget(budget)
+
+def deleteBudget(budgetId):
+    return budget_dao.deleteBudget(budgetId)

@@ -13,6 +13,7 @@
         <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
             <h1>Spent</h1>
             <h2>{{ amountSpent}}</h2>
+            <a href="manage-budget">Manage Budget</a>
         </div>
 
         <div class="col-md-9 order-1 order-md-1 mr-1 budgetProgress">
@@ -31,9 +32,9 @@
                             <div *ngIf="transaction.amount <= (budget.amount / 2)" class="budgetStatus" 
                             style="background-color: green;" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
                             <div *ngIf="transaction.amount >= (budget.amount * 0.60) && transaction.amount <= (budget.amount * 0.90)" class="budgetStatus" 
-                            style="background-color: yellow;" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
+                            style="background-color: #f5f529;" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
                             <div *ngIf="transaction.amount >= (budget.amount * 0.90)" class="budgetStatus" 
-                                style="background-color: red;" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
+                                style="background-color: #bf645a;" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
                         </div>
                     </div>
                 </div>
@@ -106,7 +107,8 @@
             </div>
             <span style="color:red;width:100%;padding:1em;"> {{ errorMessage }} </span>
             <div class="col-12 mt-2">
-                <button style="float:right;" (click)="addTransaction()" matDialogClose="yes">Add</button>
+                <button style="float:right;" (click)="addTransaction()">Add</button>
+                <button style="float:right;margin-right:15px;" matDialogClose="yes">Close</button>
             </div>
         </form>
     </div>
@@ -120,15 +122,15 @@
     <h1>Manage Categories</h1>
     <div class="container-fluid justify-content-center" style="margin-top:25px;">
         <form>
-            <div class="col-12">
+            <div class="col-12" style="margin-top:75px;">
                 Category Name:
             </div>
             <div class="col-12">
                 <input type="text" [(ngModel)]="categoryName" name="categoryName">
                 <span style="color:red;"> {{ errorMessage }} </span>
-                <button style="float:right;" (click)="addCategory()">Add</button>
+                <button style="float:right;margin-top:5px;" (click)="addCategory()">Add</button>
             </div>
-            <div class="col-12 mt-4">
+            <div class="col-12" style="margin-top:25px;">
                 Categories:
             </div>
             <div class="col-12">
@@ -137,7 +139,7 @@
                 </select>
             </div>
             <div class="col-12">
-                <button style="float:right;" (click)="deleteCategory()">Remove</button>
+                <button style="float:right;" (click)="deleteCategory()" style="margin-top:5px;">Remove</button>
             </div>
         </form>
     </div>

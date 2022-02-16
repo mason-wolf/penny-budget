@@ -34,7 +34,6 @@ def login():
         else:
              return jsonify({"Error": "Bad username or password"}), 401
 
-# Start Account Endpoints
 @app.route('/getAccount', methods=['POST'])
 @jwt_required()
 def getAccount():
@@ -97,9 +96,7 @@ def deleteTransaction():
     payload = json.loads(payload)
     transaction = JSONToTransaction(payload)
     return jsonify(account.deleteTransaction(transaction))
-# End Account Endpoints
 
-# Start Budget Endpoints
 @app.route('/getBudgetByCategory', methods=['POST'])
 @jwt_required()
 def getBudgetByCategory():
@@ -150,7 +147,20 @@ def archiveAccount():
         transaction.amount = budgetItem["amount"]
         budget.addBudget(transaction)
     return jsonify("Account archived.")
-# End Budget Endpoints
+
+@app.route('/deleteBudget', methods=["DELETE"])
+@jwt_required()
+def deleteBudget():
+    payload = request.data
+    payload = json.loads(payload)
+    return jsonify(budget.deleteBudget(payload["budgetId"]))
+
+@app.route('/getTotalBudget', methods=["POST"])
+@jwt_required()
+def getTotalBudget():
+    payload = request.data
+    payload = json.loads(payload)
+    return jsonify(budget.getTotalBudget(payload["username"]))
 
 if __name__ == '__main__':
     app.run(host="localhost", port=80)

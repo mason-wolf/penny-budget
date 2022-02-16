@@ -13,6 +13,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthInterceptor } from './shared/auth.interceptor';
 import { AccountActivityComponent } from './account-activity/account-activity.component';
+import { ManageBudgetComponent } from './manage-budget/manage-budget.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { AccountActivityComponent } from './account-activity/account-activity.co
     HeaderComponent,
     DashboardComponent,
     AccountActivityComponent,
+    ManageBudgetComponent,
   ],
   imports: [
     BrowserModule,

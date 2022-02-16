@@ -1,0 +1,38 @@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-9 m-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background-color: white;padding-top:1em;">
+                  <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Manage Budget</li>
+                </ol>
+              </nav>
+            <h1>Manage Budget</h1>
+            <table class="budgetTable">
+              <th>Category</th>
+              <th style="border-right:none;">Projected</th>
+              <tr *ngFor="let budget of budgetItems">
+                <td>{{ budget.category }}</td>
+                <td style="border-right:none;">{{ budget.amount | currency}}</td>
+                <td style="border-left:none;text-align:right;"><a [routerLink]="" (click)="deleteBudgetItem(budget)">Remove</a></td>
+              </tr>
+              <tr>
+                <th>Total Income</th>
+                <td>{{ income | currency }}</td>
+              </tr>
+              <tr>
+                <th>Remaining Balance</th>
+                <td>{{ balance }}</td>
+              </tr>
+              <tr>
+                <th>Total Budget</th>
+                <td>{{ totalBudget | currency }}</td>
+              </tr>
+              <tr>
+                <th>Projected Savings</th>
+                <td>{{ calculateSavings(income, balance, totalBudget) | currency }}</td>
+              </tr>
+            </table>
+        </div>
+    </div>
+</div>

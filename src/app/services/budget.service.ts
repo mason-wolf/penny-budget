@@ -19,6 +19,10 @@ export class BudgetService {
     return this.httpClient.post(environment.apiEndpoint + "/getBudgetCategories", { "username" : username })
   }
 
+  getTotalBudget(username: string) {
+    return this.httpClient.post(environment.apiEndpoint + "/getTotalBudget", { "username" : username })
+  }
+
   addCategory(username: string, title: string) {
     return this.httpClient.post(environment.apiEndpoint + "/addCategory", { "username": username, "title": title })
   }
@@ -33,5 +37,17 @@ export class BudgetService {
       }
     }
     return this.httpClient.delete(environment.apiEndpoint + '/deleteCategory', options);
+  }
+
+  deleteBudget(budgetId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: {
+        budgetId: budgetId
+      }
+    }
+    return this.httpClient.delete(environment.apiEndpoint + '/deleteBudget', options);
   }
 }
