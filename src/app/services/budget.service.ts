@@ -14,4 +14,24 @@ export class BudgetService {
   getBudgetByCategory(username: string, month: number, year: number) {
     return this.httpClient.post(environment.apiEndpoint + '/getBudgetByCategory', { "username" : username, "month" : month, "year" : year });
   }
+
+  getBudgetCategories(username: string) {
+    return this.httpClient.post(environment.apiEndpoint + "/getBudgetCategories", { "username" : username })
+  }
+
+  addCategory(username: string, title: string) {
+    return this.httpClient.post(environment.apiEndpoint + "/addCategory", { "username": username, "title": title })
+  }
+
+  deleteCategory(categoryId: number) {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: {
+        categoryId: categoryId
+      }
+    }
+    return this.httpClient.delete(environment.apiEndpoint + '/deleteCategory', options);
+  }
 }

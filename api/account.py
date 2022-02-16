@@ -18,3 +18,6 @@ def addTransaction(transaction: Transaction):
 
 def deleteTransaction(transactionId):
     return account_dao.deleteTransaction(transactionId)
+
+def archiveAccount(username, date):
+    return account_dao.archiveAccount(username, date)

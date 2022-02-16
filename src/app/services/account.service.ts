@@ -42,4 +42,8 @@ export class AccountService {
     }
     return this.httpClient.delete(environment.apiEndpoint + '/deleteTransaction', options);
   }
+
+  archiveAccount(username: string) {
+    return this.httpClient.post(environment.apiEndpoint + '/archiveAccount', { "username" : username })
+  }
 }

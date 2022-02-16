@@ -7,4 +7,4 @@ class Transaction:
         self.amount = 0
         self.category = ""
         self.account = ""
-        self.archived = 1
+        self.archived = 0

@@ -11,6 +11,26 @@ def getAccount(username):
     result = db.executeQuery(query, (username,))
     return result[0]
 
+# If a user signs on in the future and a budget already exists for a
+# previous month, archive those transactions and budgets so the user can create a new one.
+# Where date is the new budget start date.
+def archiveAccount(username, date):
+
+    # Update the account with the new budget start date.
+    print(date)
+    print(username)
+    accountQuery = "update accounts set budgetStartDate = %s where accountOwner = %s"
+    db.executeCUD(accountQuery, (date, username,))
+
+    # Archive the budgets from previous months.
+    budgetQuery = "update budgets set archived=1 where owner=%s"
+    db.executeCUD(budgetQuery, (username,))
+
+    # Archive the transactions from previous months.
+    transactionQuery = "update transactions set archived=1 where owner=%s"
+    db.executeCUD(transactionQuery, (username,))
+    return "Account archived."
+
 def getAmountEarned(username, month, year):
     query = "select sum(amount) from transactions where owner= %s and month(date) = %s and year(date) = %s and category='Income'"
     result = db.executeQuery(query, (username, month, year,))
@@ -35,27 +55,32 @@ def getTransactionHistory(username):
 
 def addTransaction(transaction: Transaction):
     query = "insert into transactions (owner, date, amount, category, archived) values (%s, %s, %s, %s, %s)"
-    # Update account balance if the transaction is a source of income.
+    # Add to account balance if the transaction is a source of income.
+    accountBalance = float(getBalance(transaction.owner))
     if (transaction.category=='Income'):
-        accountBalance = float(getBalance(transaction.owner))
         updatedBalance = accountBalance + float(transaction.amount)
-        # Update account balance.
+        # Add to account balance.
         updateBalance(transaction.owner, updatedBalance)
         # Create transaction.
         db.executeCUD(query, (transaction.owner, transaction.date, transaction.amount, transaction.category, transaction.archived,))
     else:
+        # Subtract from account balance if the transaction was a deduction.
+        updatedBalance = accountBalance - float(transaction.amount)
+        updateBalance(transaction.owner, updatedBalance)
         db.executeCUD(query, (transaction.owner, transaction.date, transaction.amount, transaction.category, transaction.archived,))
     return 'Transaction Added'
 
 def deleteTransaction(transaction: Transaction):
     query = "delete from transactions where id=%s"
     # If transaction is a source of income, update the account balance.
+    accountBalance = float(getBalance(transaction.owner))
     if (transaction.category=='Income'):
-        accountBalance = float(getBalance(transaction.owner))
         updatedBalance = accountBalance - float(transaction.amount)
         updateBalance(transaction.owner, updatedBalance)
         db.executeCUD(query, (transaction.id,))
     else:
+        updatedBalance = accountBalance + float(transaction.amount)
+        updateBalance(transaction.owner, updatedBalance)
         db.executeCUD(query, (transaction.id,))
     return 'Transaction Deleted'
 

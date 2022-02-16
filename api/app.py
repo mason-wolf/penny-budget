@@ -9,6 +9,7 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from models.transaction import Transaction
+from datetime import date
 
 import budget
 import account
@@ -116,7 +117,39 @@ def getBudgetCategories():
     payload = json.loads(payload)
     username = payload["username"]
     return jsonify(budget.getBudgetCategories(username))
-    
+
+@app.route('/addCategory', methods=["POST"])
+@jwt_required()
+def addCategory():
+    payload = request.data
+    payload = json.loads(payload)
+    username = payload["username"]
+    title = payload["title"]
+    return jsonify(budget.addCategory(username, title))
+
+@app.route('/deleteCategory', methods=["DELETE"])
+@jwt_required()
+def deleteCategory():
+    payload = request.data
+    payload = json.loads(payload)
+    return jsonify(budget.deleteCategory(payload["categoryId"]))
+
+@app.route('/archiveAccount', methods=["POST"])
+@jwt_required()
+def archiveAccount():
+    payload = request.data
+    payload = json.loads(payload)
+    activeBudgets = budget.getActiveBudgets(payload["username"])
+    today = date.today()
+    account.archiveAccount(payload["username"], today.strftime("%Y-%m-%d"))
+    for budgetItem in activeBudgets:
+        transaction = Transaction()
+        transaction.owner = budgetItem["owner"]
+        transaction.category = budgetItem["category"]
+        transaction.date = today.strftime("%Y-%m-%d")
+        transaction.amount = budgetItem["amount"]
+        budget.addBudget(transaction)
+    return jsonify("Account archived.")
 # End Budget Endpoints
 
 if __name__ == '__main__':

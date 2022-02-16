@@ -16,6 +16,7 @@
         </div>
 
         <div class="col-md-9 order-1 order-md-1 mr-1 budgetProgress">
+            <h2> {{ date | date: 'MMMM YYYY' }} Budget</h2>
             <div class="d-flex justify-content-between" style="margin-bottom: 25px;">
                     <button class="ml-auto" (click)="showTransactionDialog()">Add Transaction</button>
             </div>
@@ -63,7 +64,7 @@
             <div class="col-12">
                 <input type="date" formControlName="incomeDate">
             </div>
-            <span style="color:red;width:100%;padding:1em;"> {{ incomeError }} </span>
+            <span style="color:red;width:100%;padding:1em;"> {{ errorMessage }} </span>
             <div class="col-12 mt-2">
                 <button style="float:right;" (click)="addIncome()" matDialogClose="yes">Add</button>
             </div>
@@ -80,30 +81,32 @@
     <div class="container-fluid justify-content-center" style="margin-top:25px;">
         <form [formGroup]="transactionForm">
             <div class="col-12">
-                Balance: {{ balance || currency }}
+                Balance: <span style="float:right;">{{ balance || currency }}</span>
             </div>
-            <div class="col-12">
+            <div class="col-12 mt-3">
                 Amount:
             </div>
             <div class="col-12">
                 <input type="text" formControlName="transactionAmount">
             </div>
-            <div class="col-12">
+            <div class="col-12 mt-3">
                 Category:
             </div>
             <div class="col-12">
-                <input type="text" formControlName="transactionCategory">
+                <select [(ngModel)]="transactionCategory" formControlName="transactionCategory">
+                    <option *ngFor="let category of categories" [ngValue]="category"> {{ category.title }} </option>
+                </select>
                 <a [routerLink]="" (click)="showCategoryDialog()">Manage Categories</a>
             </div>
-            <div class="col-12 p-2">
+            <div class="col-12 mt-3">
                 Date:
             </div>
             <div class="col-12">
                 <input type="date" formControlName="transactionDate">
             </div>
-            <span style="color:red;width:100%;padding:1em;"> {{ incomeError }} </span>
+            <span style="color:red;width:100%;padding:1em;"> {{ errorMessage }} </span>
             <div class="col-12 mt-2">
-                <button style="float:right;" (click)="addIncome()" matDialogClose="yes">Add</button>
+                <button style="float:right;" (click)="addTransaction()" matDialogClose="yes">Add</button>
             </div>
         </form>
     </div>
@@ -116,24 +119,25 @@
     </mat-dialog-actions>
     <h1>Manage Categories</h1>
     <div class="container-fluid justify-content-center" style="margin-top:25px;">
-        <form [formGroup]="transactionForm">
+        <form>
             <div class="col-12">
                 Category Name:
             </div>
             <div class="col-12">
-                <input type="text" formControlName="transactionAmount">
-                <button style="float:right;">Add</button>
+                <input type="text" [(ngModel)]="categoryName" name="categoryName">
+                <span style="color:red;"> {{ errorMessage }} </span>
+                <button style="float:right;" (click)="addCategory()">Add</button>
             </div>
             <div class="col-12 mt-4">
                 Categories:
             </div>
             <div class="col-12">
-                <select>
-                    <option>test</option>
+                <select name="categoryName" [(ngModel)]="categoryToRemove">
+                    <option *ngFor="let category of categories" [ngValue]="category" >{{ category.title }}</option>
                 </select>
             </div>
             <div class="col-12">
-                <button style="float:right;" (click)="addIncome()" matDialogClose="yes">Remove</button>
+                <button style="float:right;" (click)="deleteCategory()">Remove</button>
             </div>
         </form>
     </div>

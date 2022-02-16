@@ -2,9 +2,11 @@ import { formatCurrency, formatDate } from '@angular/common';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AccountService } from '../services/account.service';
 import { BudgetService } from '../services/budget.service';
 import { Budget } from '../shared/models/budget.model';
+import { Category } from '../shared/models/category.model';
 import { Transaction } from '../shared/models/transaction.model';
 
 @Component({
@@ -24,25 +26,33 @@ export class DashboardComponent implements OnInit {
   year: number;
   transactions: Transaction[] = [];
   budgetItems: Budget[] = [];
-  incomeError: string;
+  errorMessage: string;
 
+  // Income form fields
   incomeAmount: number;
   incomeDate: string;
   incomeForm: FormGroup;
 
+  // Transaction form fields
   transactionAmount: number;
   transactionDate: string;
-  transactionCategory: string;
+  transactionCategory: Category;
   transactionForm: FormGroup;
 
+  // Category form fields
   categoryName: string;
-  categories : [] = [];
+  categoryToRemove: Category;
+  categories : Category[] = [];
 
   @ViewChild('addIncomeDialog') addIncomeDialog: TemplateRef<any>;
   @ViewChild('addTransactionDialog') addTransactionDialog: TemplateRef<any>;
   @ViewChild('manageCategoryDialog') manageCategoryDialog: TemplateRef<any>;
 
-  constructor(private budgetService: BudgetService, private accountService: AccountService, private dialog: MatDialog) {
+  constructor(
+    private budgetService: BudgetService, 
+    private accountService: AccountService, 
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar) {
 
     this.month = this.date.getMonth() + 1;
     this.year = this.date.getFullYear();
@@ -74,6 +84,7 @@ export class DashboardComponent implements OnInit {
     this.getIncome();
     this.getSpent();
     this.getBudget();
+    this.getCategories();
   }
 
   // Get account balance and account name.
@@ -81,6 +92,13 @@ export class DashboardComponent implements OnInit {
     this.accountService.getAccount(this.currentUser).subscribe(resp => {
       this.balance = formatCurrency(resp["balance"] as number, 'en', '$');
       this.accountName = resp["accountName"];
+      let budgetStartDate = resp["budgetStartDate"];
+
+      if (this.monthLapsed(new Date(budgetStartDate))) {
+        this.accountService.archiveAccount(this.currentUser).subscribe(value => {
+          console.log(value);
+        });
+      }
     })
   }
 
@@ -92,6 +110,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getSpent() {
+    this.transactions = [];
     this.accountService.getTotalSpentByCategory(this.currentUser, this.month, this.year).subscribe(data => {
 
       let totalSpent = 0;
@@ -120,7 +139,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getBudget() {
-    this.budgetService.getBudgetByCategory(this.currentUser, 1, this.year).subscribe(data => {
+    this.budgetItems = [];
+    this.budgetService.getBudgetByCategory(this.currentUser, this.month, this.year).subscribe(data => {
+      console.log(data);
       Object.keys(data).forEach((key) => {
         let budget = new Budget();
         budget.amount = data[key].amount;
@@ -130,15 +151,29 @@ export class DashboardComponent implements OnInit {
     })
   }
   
+  getCategories() {
+    this.categories = [];
+    this.budgetService.getBudgetCategories(this.currentUser).subscribe(data => {
+      Object.keys(data).forEach((key) => {
+        let category = new Category();
+        category.id = data[key].id;
+        category.owner = data[key].owner;
+        category.title = data[key].title;
+        this.categories.push(category);
+      })
+    })
+  }
+
   showIncomeDialog() {
-    let incomeDialog = this.dialog.open(this.addIncomeDialog, {
-      width: '30%'
+    this.dialog.open(this.addIncomeDialog, {
+      minWidth: '30%',
+      maxWidth: '100%'
     })
   }
 
   addIncome() {
     if (this.incomeForm.get('incomeAmount').invalid) {
-      this.incomeError = "Please enter a valid amount.";
+      this.errorMessage = "Please enter a valid amount.";
     }
     else {
       this.incomeAmount = this.incomeForm.get('incomeAmount').value;
@@ -153,7 +188,12 @@ export class DashboardComponent implements OnInit {
       transaction.id = null;
       transaction.owner = this.currentUser;
       transaction.amount = this.incomeAmount;
-      transaction.archived = 0;
+      if (this.monthLapsed(new Date(this.incomeDate))) {
+        transaction.archived = 1;
+      }
+      else {
+        transaction.archived = 0;
+      }
       transaction.date = this.incomeDate;
       transaction.category = 'Income';
       transaction.account = null;
@@ -165,18 +205,97 @@ export class DashboardComponent implements OnInit {
   }
 
   showTransactionDialog() {
-    let transactionDialog = this.dialog.open(this.addTransactionDialog, {
-      width: '30%'
+    this.dialog.open(this.addTransactionDialog, {
+      minWidth: '30%',
+      maxWidth: '100%'
     })
   }
 
   showCategoryDialog() {
-    let categoryDialog = this.dialog.open(this.manageCategoryDialog, {
-      width: '30%'
+    this.dialog.open(this.manageCategoryDialog, {
+      minWidth: '30%',
+      maxWidth: '100%'
     })
   }
-  addTransaction() {
 
+  addTransaction() {
+    let amount = this.transactionForm.get('transactionAmount');
+    let category = this.transactionForm.get('transactionCategory');
+    let date = this.transactionForm.get('transactionDate');
+
+    if (amount.invalid) {
+      this.errorMessage = "Please enter a valid amount.";
+    }
+    else if (category.invalid) {
+      this.errorMessage = "Please select a category.";
+    }
+    else {
+      this.errorMessage = undefined;
+
+      if (date.value == null) {
+        let today = new Date();
+        this.transactionDate = formatDate(today, 'yyyy-MM-dd', 'en-us');
+      }
+      else {
+        this.transactionDate = date.value;
+      }
+
+      let transaction = new Transaction();
+      transaction.id = null;
+      transaction.owner = this.currentUser;
+      transaction.amount = amount.value;
+      transaction.category = category.value.title;
+      transaction.account = this.accountName;
+      transaction.date = this.transactionDate;
+
+      if (this.monthLapsed(new Date(transaction.date))) {
+        transaction.archived = 1;
+      }
+      else {
+        transaction.archived = 0;
+      }
+
+      this.accountService.addTransaction(transaction).subscribe(resp => {
+        this.snackBar.open("Transaction added.", "OK", {"duration" : 2000});
+        this.getAccount();
+        this.getSpent();
+        this.getBudget();
+      })
+    }
+  }
+
+  addCategory() {
+    if (this.categoryName == undefined) {
+      this.errorMessage = "Please enter a category name.";
+    }
+    else {
+      this.errorMessage = null;
+      this.budgetService.addCategory(this.currentUser, this.categoryName).subscribe(resp => {
+        this.snackBar.open("Category added!", "OK", {"duration" : 2000});
+        this.getCategories();
+      })
+      this.categoryName = undefined;
+    }
+  }
+
+  deleteCategory() {
+    if (this.categoryToRemove != undefined) {
+      this.budgetService.deleteCategory(this.categoryToRemove.id).subscribe(resp => {
+        this.snackBar.open("Category removed.", "OK", {"duration" : 2000});
+        this.getCategories();
+        this.categoryToRemove = undefined;
+      })
+    }
+  }
+
+  monthLapsed(date: Date) : boolean {
+    let lapsed = false;
+    let today = new Date();
+
+    if ((date.getMonth() + 1) < (today.getMonth() + 1) || date.getFullYear() < today.getFullYear()) {
+      lapsed = true;
+    }
+    return lapsed;
   }
 
   ngOnInit(): void {
