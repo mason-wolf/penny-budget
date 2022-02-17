@@ -1,3 +1,4 @@
+from gettext import translation
 from http.client import OK
 from inspect import trace
 from re import sub
@@ -148,6 +149,20 @@ def archiveAccount():
         budget.addBudget(transaction)
     return jsonify("Account archived.")
 
+@app.route('/addBudget', methods=["POST"])
+@jwt_required()
+def addBudget():
+    payload = request.data
+    payload = json.loads(payload)
+    today = date.today()
+    transaction = Transaction()
+    transaction.owner = payload["budgetItem"]["owner"]
+    transaction.category = payload["budgetItem"]["category"]["title"]
+    transaction.date = today.strftime("%Y-%m-%d")
+    transaction.amount = payload["budgetItem"]["amount"]
+    budget.addBudget(transaction)
+    return jsonify("Budget added.")
+    
 @app.route('/deleteBudget', methods=["DELETE"])
 @jwt_required()
 def deleteBudget():

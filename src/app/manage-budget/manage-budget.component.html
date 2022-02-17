@@ -8,21 +8,21 @@
                 </ol>
               </nav>
             <h1>Manage Budget</h1>
-            <table class="budgetTable">
+            <button (click)="showBudgetDialog()">Add Budget</button>
+            <table class="budgetTable" style="margin-top:50px;">
               <th>Category</th>
               <th style="border-right:none;">Projected</th>
               <tr *ngFor="let budget of budgetItems">
                 <td>{{ budget.category }}</td>
                 <td style="border-right:none;">{{ budget.amount | currency}}</td>
-                <td style="border-left:none;text-align:right;"><a [routerLink]="" (click)="deleteBudgetItem(budget)">Remove</a></td>
+                <td style="text-align:right;"><a [routerLink]="" (click)="deleteBudgetItem(budget)">Remove</a></td>
               </tr>
               <tr>
-                <th>Total Income</th>
-                <td>{{ income | currency }}</td>
-              </tr>
-              <tr>
-                <th>Remaining Balance</th>
-                <td>{{ balance }}</td>
+                <th>Monthly Income</th>
+                <td>
+                  {{ monthlyIncome | currency }}
+                  <a [routerLink]="" style="float:right;" (click)="showIncomeDialog()">Update</a>
+                </td>
               </tr>
               <tr>
                 <th>Total Budget</th>
@@ -30,9 +30,89 @@
               </tr>
               <tr>
                 <th>Projected Savings</th>
-                <td>{{ calculateSavings(income, balance, totalBudget) | currency }}</td>
+                <td>{{ calculateSavings(monthlyIncome, totalBudget) | currency}}</td>
               </tr>
             </table>
         </div>
     </div>
 </div>
+
+<!-- Add budget dialog -->
+<ng-template #addBudgetDialog>
+  <mat-dialog-actions align="end">
+      <i class="fa fa-window-close" mat-button matDialogClose="yes" style="font-size:32px;"></i>
+  </mat-dialog-actions>
+  <h2>Add Budget</h2>
+  <div class="container-fluid justify-content-center">
+      <form>
+          <div class="col-12" style="margin-top:15px;">
+              Amount:
+          </div>
+          <div class="col-12">
+              <input type="text" [(ngModel)]="budgetAmount" name="budgetAmount">
+              <span style="color:red;width:50px;"> {{ errorMessage }} </span><br>
+          </div>
+          <div class="col-12 mt-3">
+            Category:
+        </div>
+        <div class="col-12">
+            <select [(ngModel)]="budgetCategory" name="budgetCategory">
+                <option *ngFor="let category of categories" [ngValue]="category"> {{ category.title }} </option>
+            </select>
+            <a [routerLink]="" (click)="showCategoryDialog()">Manage Categories</a>
+            <button style="float:right;margin-top:5px;" (click)="addBudgetItem()">Add</button>
+        </div>
+      </form>
+  </div>
+</ng-template>
+
+<!-- Set Income dialog -->
+<ng-template #setIncomeDialog>
+  <mat-dialog-actions align="end">
+      <i class="fa fa-window-close" mat-button matDialogClose="yes" style="font-size:32px;"></i>
+  </mat-dialog-actions>
+  <h2>Monthly Income</h2>
+  <div class="container-fluid justify-content-center">
+      <form>
+          <div class="col-12" style="margin-top:15px;">
+              Amount:
+          </div>
+          <div class="col-12">
+              <input type="text" [(ngModel)]="monthlyIncome" name="monthlyIncome">
+              <span style="color:red;width:50px;"> {{ errorMessage }} </span><br>
+              <button style="float:right;margin-top:5px;" (click)="updateIncome()">Update</button>
+          </div>
+      </form>
+  </div>
+</ng-template>
+
+<!-- Manage Categories dialog -->
+<ng-template #manageCategoryDialog>
+  <mat-dialog-actions align="end">
+      <i class="fa fa-window-close" mat-button matDialogClose="yes" style="font-size:32px;"></i>
+  </mat-dialog-actions>
+  <h1>Manage Categories</h1>
+  <div class="container-fluid justify-content-center">
+      <form>
+          <div class="col-12" style="margin-top:25px;">
+              Category Name:
+          </div>
+          <div class="col-12">
+              <input type="text" [(ngModel)]="budgetCategory" name="budgetCategory">
+              <span style="color:red;"> {{ errorMessage }} </span>
+              <button style="float:right;margin-top:5px;" (click)="addCategory()">Add</button>
+          </div>
+          <div class="col-12" style="margin-top:25px;">
+              Categories:
+          </div>
+          <div class="col-12">
+              <select name="budgetCategory" [(ngModel)]="categoryToRemove">
+                  <option *ngFor="let category of categories" [ngValue]="category" >{{ category.title }}</option>
+              </select>
+          </div>
+          <div class="col-12">
+              <button style="float:right;" (click)="deleteCategory()" style="margin-top:5px;">Remove</button>
+          </div>
+      </form>
+  </div>
+</ng-template>
