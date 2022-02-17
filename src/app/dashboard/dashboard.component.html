@@ -16,7 +16,7 @@
             <a href="manage-budget">Manage Budget</a>
         </div>
 
-        <div class="col-md-9 order-1 order-md-1 mr-1 budgetProgress">
+        <div class="col-md-10 order-1 order-md-1 mr-1 budgetProgress">
             <h2> {{ date | date: 'MMMM YYYY' }} Budget</h2>
             <div class="d-flex justify-content-between" style="margin-bottom: 25px;">
                     <button class="ml-auto" (click)="showTransactionDialog()">Add Transaction</button>
@@ -40,7 +40,17 @@
                 </div>
             </div>
         </div>
-        
+    </div>
+    <div class="row justify-content-center">
+            <div class="col-md-5 mr-1 order-1 budgetProgress">
+                <h2>Budget History</h2>
+                <select [(ngModel)]="selectedArchive" name="selectedArcive">
+                    <option *ngFor="let budget of budgetHistory" [ngValue]="budget">{{ budget | date: 'MMMM YYYY' }}</option>
+                </select>
+                <button (click)="viewSelectedArchive()">View</button>
+            </div>
+            <div class="col-md-5 order-1">
+            </div>
     </div>
 </div>
 

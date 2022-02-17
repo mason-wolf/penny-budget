@@ -14,6 +14,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthInterceptor } from './shared/auth.interceptor';
 import { AccountActivityComponent } from './account-activity/account-activity.component';
 import { ManageBudgetComponent } from './manage-budget/manage-budget.component';
+import { BudgetHistoryComponent } from './budget-history/budget-history.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { ManageBudgetComponent } from './manage-budget/manage-budget.component';
     DashboardComponent,
     AccountActivityComponent,
     ManageBudgetComponent,
+    BudgetHistoryComponent,
   ],
   imports: [
     BrowserModule,

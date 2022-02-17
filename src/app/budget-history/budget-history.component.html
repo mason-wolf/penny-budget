@@ -1,0 +1,38 @@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-9 m-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background-color: white;padding-top:1em;">
+                  <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Budget History</li>
+                </ol>
+              </nav>
+            <h1> {{ budgetDate | date: 'MMMM YYYY' }} Budget</h1>
+            <table class="budgetTable" style="margin-top:50px;">
+              <th>Category</th>
+              <th>Budget</th>
+              <th>Spent</th>
+              <tr *ngFor="let budget of budgetArchive">
+                <td>{{ budget.category }}</td>
+                <td>{{ budget.budgetAmount | currency }}</td>
+                <td>
+                  <span style="color:green;" *ngIf="budget.budgetSpent < budget.budgetAmount || budget.budgetSpent == budget.budgetAmount">{{ budget.budgetSpent | currency }}</span>
+                  <span style="color:red;" *ngIf="budget.budgetSpent > budget.budgetAmount">{{ budget.budgetSpent | currency }}</span>
+                </td>
+              </tr>
+              <tr>
+                <th>Income</th>
+                <td>{{ income | currency }}</td>
+              </tr>
+              <tr>
+                <th>Budget</th>
+                <td>{{ totalBudget | currency }}</td>
+              </tr>
+              <tr>
+                <th>Spent</th>
+                <td>{{ totalSpent | currency }}</td>
+              </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AccountActivityComponent } from './account-activity/account-activity.component';
+import { BudgetHistoryComponent } from './budget-history/budget-history.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { ManageBudgetComponent } from './manage-budget/manage-budget.component';
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   { path: 'account-activity', component: AccountActivityComponent, canActivate: [AuthGuard]},
-  { path: 'manage-budget', component: ManageBudgetComponent, canActivate: [AuthGuard]}
+  { path: 'manage-budget', component: ManageBudgetComponent, canActivate: [AuthGuard]},
+  { path: 'budget-history/:month/:year', component: BudgetHistoryComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({

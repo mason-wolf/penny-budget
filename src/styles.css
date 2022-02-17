@@ -21,3 +21,13 @@ button {
     font-weight: 200;
     padding: .2em .8em;
 }
+
+.budgetTable {
+    width: 100%;
+    border: 1px solid #ccc;
+}
+
+.budgetTable th, td {
+    padding: .4em;
+    border: 1px solid #ccc;
+}

@@ -3,6 +3,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
 import { BudgetService } from '../services/budget.service';
 import { Budget } from '../shared/models/budget.model';
@@ -44,6 +45,9 @@ export class DashboardComponent implements OnInit {
   categoryToRemove: Category;
   categories : Category[] = [];
 
+  budgetHistory : any[] = [];
+  selectedArchive : any;
+
   @ViewChild('addIncomeDialog') addIncomeDialog: TemplateRef<any>;
   @ViewChild('addTransactionDialog') addTransactionDialog: TemplateRef<any>;
   @ViewChild('manageCategoryDialog') manageCategoryDialog: TemplateRef<any>;
@@ -52,7 +56,8 @@ export class DashboardComponent implements OnInit {
     private budgetService: BudgetService, 
     private accountService: AccountService, 
     private dialog: MatDialog,
-    private snackBar: MatSnackBar) {
+    private snackBar: MatSnackBar,
+    private router: Router) {
 
     this.month = this.date.getMonth() + 1;
     this.year = this.date.getFullYear();
@@ -85,6 +90,7 @@ export class DashboardComponent implements OnInit {
     this.getSpent();
     this.getBudget();
     this.getCategories();
+    this.getBudgetHistory();
   }
 
   // Get account balance and account name.
@@ -150,6 +156,24 @@ export class DashboardComponent implements OnInit {
     })
   }
   
+  viewSelectedArchive() {
+    if (this.selectedArchive != null) {
+      let date = new Date(this.selectedArchive);
+      let month = formatDate(date, 'MM', 'en-us');
+      let year = formatDate(date, 'YYYY', 'en-us');
+      this.router.navigate(['/budget-history/', month, year])
+    }
+  }
+
+  getBudgetHistory() {
+    this.budgetService.getBudgetHistory(this.currentUser).subscribe(data => {
+      Object.keys(data).forEach((key) => {
+        let date = new Date(data[key].year, data[key].month, 0, 1);
+        this.budgetHistory.push(date);
+      })
+    })
+  }
+
   getCategories() {
     this.categories = [];
     this.budgetService.getBudgetCategories(this.currentUser).subscribe(data => {
