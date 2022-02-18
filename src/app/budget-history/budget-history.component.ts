@@ -20,6 +20,8 @@ export class BudgetHistoryComponent implements OnInit {
   totalBudget = 0;
   totalSpent = 0;
 
+  remainingBalance: number;
+
   constructor(private budgetService: BudgetService, private router: ActivatedRoute, private accountService: AccountService) {
     this.currentUser = sessionStorage.getItem('username');
     this.month = Number(this.router.snapshot.paramMap.get('month'));
@@ -27,6 +29,10 @@ export class BudgetHistoryComponent implements OnInit {
     this.budgetDate = new Date(this.year, this.month, 0, 1);
     this.getBudgetArchive();
     this.getIncome();
+
+    this.budgetService.getRemainingBalance(this.currentUser, this.month, this.year).subscribe(value => {
+      this.remainingBalance = Number(value);
+    })
   }
 
   getBudgetArchive() {

@@ -1,3 +1,4 @@
+import datetime
 from flask import jsonify
 from models.transaction import Transaction
 import db 
@@ -49,13 +50,31 @@ def getBudgetArchive(username, month, year):
         archive.append(item)
     return archive
 
+def getRemainingBalance(username, month, year):
+    query = """
+        SELECT (income.earned - spent.spent) as BALANCE FROM
+        (SELECT SUM(amount) as earned FROM transactions WHERE owner=%s
+        AND category = 'Income' and date < %s) income
+        CROSS JOIN
+        (SELECT SUM(amount) as spent FROM transactions WHERE owner=%s
+        AND category != 'Income' and date < %s) spent
+        """
+    if (month == 12):
+        month = 1
+        year = year + 1
+    else:
+        month = month + 1
+    date = datetime.datetime(year, month, 1).date()
+    result = db.executeQuery(query, (username, date, username, date,))
+    return result[0]["BALANCE"]
+
 def getTotalBudget(username):
     query = "SELECT SUM(amount) AS amount from budgets where owner=%s and archived = 0"
     result = db.executeQuery(query, (username,))
     return result[0]
     
 def getBudgetByCategory(username, month, year):
-    query = "select * from budgets where owner = %s and archived = 0 and MONTH(startDate) = %s and YEAR(startDate) = %s"
+    query = "select * from budgets where owner = %s and archived = 0 and MONTH(startDate) = %s and YEAR(startDate) = %s order by amount desc"
     result = db.executeQuery(query, (username, month, year))
     return result
 

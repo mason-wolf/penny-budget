@@ -1,14 +1,14 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-9 m-5">
-            <nav aria-label="breadcrumb">
+            <nav aria-label="breadcrumb" style="margin-top: -25px;">
                 <ol class="breadcrumb" style="background-color: white;padding-top:1em;">
                   <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
                   <li class="breadcrumb-item active" aria-current="page">Budget History</li>
                 </ol>
               </nav>
             <h1> {{ budgetDate | date: 'MMMM YYYY' }} Budget</h1>
-            <table class="budgetTable" style="margin-top:50px;">
+            <table class="budgetTable" style="margin-top:10px;">
               <th>Category</th>
               <th>Budget</th>
               <th>Spent</th>
@@ -31,6 +31,10 @@
               <tr>
                 <th>Spent</th>
                 <td>{{ totalSpent | currency }}</td>
+              </tr>
+              <tr>
+                <th>Remaining Balance</th>
+                <td>{{ remainingBalance | currency }}</td>
               </tr>
             </table>
         </div>

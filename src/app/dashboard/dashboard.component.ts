@@ -237,8 +237,7 @@ export class DashboardComponent implements OnInit {
   showCategoryDialog() {
     this.dialog.open(this.manageCategoryDialog, {
       minWidth: '40%',
-      maxWidth: '100%',
-      minHeight: '560px'
+      maxWidth: '100%'
     })
   }
 

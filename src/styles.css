@@ -1,25 +1,29 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+    margin: 0; 
+    font-family: 'Metrophobic', sans-serif;
+}
 
 input, select {
     width: 100%;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 200;
     margin-top: 5px;
     margin-bottom: 5px;
     border: 1px solid #ccc;
     padding: .4em;
+    outline: none;
 }
 
 button {
     float: right;
-    font-size: 16px;
+    font-size: 14px;
     color: white;
     background-color: green;
     border: 1px solid green;
     font-weight: 200;
-    padding: .2em .8em;
+    padding: .2em .6em;
 }
 
 .budgetTable {
@@ -30,4 +34,17 @@ button {
 .budgetTable th, td {
     padding: .4em;
     border: 1px solid #ccc;
+}
+
+h1 {
+    font-family: 'Yantramanav', sans-serif;
+    font-size: 40px;
+}
+
+h2, .money {
+    font-family: 'Aleo', serif;
+}
+
+a {
+    color :green;
 }

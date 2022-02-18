@@ -1,0 +1,12 @@
+td, tr, .mat-header-row, .mat-header-row {
+    text-align: left;
+    border: none;
+}
+
+.mat-cell {
+    border-bottom:1px solid #ccc;
+}
+
+table {
+    border-spacing: 0px;
+}

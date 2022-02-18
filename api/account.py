@@ -1,5 +1,7 @@
 from datetime import date
 import json
+
+import jwt
 from models.transaction import Transaction
 from dao import account_dao
 from dao import budget_dao
@@ -25,6 +27,16 @@ def getAmountEarned():
     month = payload["month"]
     year = payload["year"]
     return jsonify(account_dao.getAmountEarned(username, month, year))
+
+@account_blueprint.route('/getRemainingBalance', methods=['POST'])
+@jwt_required()
+def getRemainingBalance():
+    payload = request.data
+    payload = json.loads(payload)
+    username = payload["username"]
+    month = payload["month"]
+    year = payload["year"]
+    return jsonify(budget_dao.getRemainingBalance(username, month, year))
 
 @account_blueprint.route('/getTotalSpentByCategory', methods=['POST'])
 @jwt_required()

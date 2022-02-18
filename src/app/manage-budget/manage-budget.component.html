@@ -1,8 +1,8 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-9 m-5">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb" style="background-color: white;padding-top:1em;">
+        <div class="col-10 m-5">
+            <nav aria-label="breadcrumb" style="margin-top:-25px;margin-left:-15px;">
+                <ol class="breadcrumb" style="background-color: white;">
                   <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
                   <li class="breadcrumb-item active" aria-current="page">Manage Budget</li>
                 </ol>
@@ -15,22 +15,26 @@
               <tr *ngFor="let budget of budgetItems">
                 <td>{{ budget.category }}</td>
                 <td style="border-right:none;">{{ budget.amount | currency}}</td>
-                <td style="text-align:right;"><a [routerLink]="" (click)="deleteBudgetItem(budget)">Remove</a></td>
+                <td style="text-align:center;border-left: none;"><a [routerLink]="" (click)="deleteBudgetItem(budget)">Remove</a></td>
               </tr>
               <tr>
                 <th>Monthly Income</th>
-                <td>
+                <td style="border-right: none;">
                   {{ monthlyIncome | currency }}
-                  <a [routerLink]="" style="float:right;" (click)="showIncomeDialog()">Update</a>
+                </td>
+                <td style="text-align: center;border-left: none;">
+                    <a [routerLink]=""(click)="showIncomeDialog()">Update</a>
                 </td>
               </tr>
               <tr>
                 <th>Total Budget</th>
-                <td>{{ totalBudget | currency }}</td>
+                <td style="border-right: none;">{{ totalBudget | currency }}</td>
+                <td style="border-left: none;"></td>
               </tr>
               <tr>
                 <th>Projected Savings</th>
-                <td>{{ calculateSavings(monthlyIncome, totalBudget) | currency}}</td>
+                <td style="border-right: none;">{{ calculateSavings(monthlyIncome, totalBudget) | currency}}</td>
+                <td style="border-left: none;"></td>
               </tr>
             </table>
         </div>
@@ -42,7 +46,7 @@
   <mat-dialog-actions align="end">
       <i class="fa fa-window-close" mat-button matDialogClose="yes" style="font-size:32px;"></i>
   </mat-dialog-actions>
-  <h2>Add Budget</h2>
+  <h2 style="margin-top:-50px;">Add Budget</h2>
   <div class="container-fluid justify-content-center">
       <form>
           <div class="col-12" style="margin-top:15px;">
@@ -91,7 +95,7 @@
   <mat-dialog-actions align="end">
       <i class="fa fa-window-close" mat-button matDialogClose="yes" style="font-size:32px;"></i>
   </mat-dialog-actions>
-  <h1>Manage Categories</h1>
+  <h2 style="margin-top:-50px;">Manage Categories</h2>
   <div class="container-fluid justify-content-center">
       <form>
           <div class="col-12" style="margin-top:25px;">

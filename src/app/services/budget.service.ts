@@ -24,6 +24,10 @@ export class BudgetService {
     return this.httpClient.post(environment.apiEndpoint + '/getBudgetHistory', { "username": username });
   }
 
+  getRemainingBalance(username: string, month: number, year: number) {
+    return this.httpClient.post(environment.apiEndpoint + '/getRemainingBalance', { "username" : username, "month" : month, "year" : year });
+  }
+
   getBudgetArchive(username: string, month: number, year: number) {
     return this.httpClient.post(environment.apiEndpoint + '/getBudgetArchive', { "username" : username, "month" : month, "year" : year });
   }
