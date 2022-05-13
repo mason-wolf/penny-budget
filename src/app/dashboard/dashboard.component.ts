@@ -87,8 +87,8 @@ export class DashboardComponent implements OnInit {
 
     this.getAccount();
     this.getIncome();
-    this.getSpent();
     this.getBudget();
+    this.getSpent();
     this.getCategories();
     this.getBudgetHistory();
   }
@@ -96,6 +96,7 @@ export class DashboardComponent implements OnInit {
   // Get account balance and account name.
   getAccount() {
     this.accountService.getAccount(this.currentUser).subscribe(resp => {
+
       this.balance = formatCurrency(resp["balance"] as number, 'en', '$');
       this.accountName = resp["accountName"];
       let budgetStartDate = resp["budgetStartDate"];
@@ -118,13 +119,21 @@ export class DashboardComponent implements OnInit {
   getSpent() {
     this.transactions = [];
     this.accountService.getTotalSpentByCategory(this.currentUser, this.month, this.year).subscribe(data => {
-
       let totalSpent = 0;
       if (data == 0) {
-        this.amountSpent = "";
+        this.amountSpent = "$0.00";
+        // If nothing was spent this month, create template transactions by 
+        // category from last month and rollover to this month.
+        this.budgetItems.forEach(budgetItem => {
+          let template = new Transaction();
+          template.category = budgetItem["category"];
+          template.amount = 0;
+          this.transactions.push(template);
+        });
       }
       else {
-        // Get all transactions by category and calculate total spent.
+        this.transactions = [];
+        // Get all transactions by category and calculate total spent.  
         Object.keys(data).forEach((key) => {
           let transaction = new Transaction();
           transaction.id = data[key].id;
@@ -138,6 +147,21 @@ export class DashboardComponent implements OnInit {
           totalSpent += transaction.amount;
         })
 
+        // We want to show budget items even if nothing was spent this month
+        // in each category.
+        let budgetTemplates = [];
+        this.budgetItems.forEach(budgetItem => {
+          let template = new Transaction();
+          template.category = budgetItem.category;
+          template.amount = 0;
+          if (!this.transactions.find(e => e.category === template.category)) {
+            budgetTemplates.push(template);
+          }
+        });
+
+        budgetTemplates.forEach(budgetTemplate => {
+          this.transactions.push(budgetTemplate);
+        });
         // Format total spent.
         this.amountSpent = formatCurrency(totalSpent, 'en', '$');
       }
@@ -271,7 +295,9 @@ export class DashboardComponent implements OnInit {
       transaction.account = this.accountName;
       transaction.date = this.transactionDate;
 
-      if (this.monthLapsed(new Date(transaction.date))) {
+      let correctedDate = formatDate(transaction.date, 'MM-dd-yyyy', 'en-us');
+
+      if (this.monthLapsed(new Date(correctedDate))) {
         transaction.archived = 1;
       }
       else {
@@ -281,8 +307,8 @@ export class DashboardComponent implements OnInit {
       this.accountService.addTransaction(transaction).subscribe(resp => {
         this.snackBar.open("Transaction added.", "OK", {"duration" : 2000});
         this.getAccount();
-        this.getSpent();
         this.getBudget();
+        this.getSpent();
       })
     }
   }

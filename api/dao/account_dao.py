@@ -44,6 +44,8 @@ def getAmountEarned(username, month, year):
 def getTotalSpentByCategory(username, month, year):
     query = "select id, owner, archived, date, category, account, sum(amount) as amount from transactions where owner= %s and archived='0' and category != 'income' and MONTH(date) =%s and YEAR(date) = %s group by category order by category"
     result = db.executeQuery(query, (username, month, year,))
+    print(month, year)
+    print(result)
     if result == []:
         result = 0
     return result
