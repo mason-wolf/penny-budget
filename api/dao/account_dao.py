@@ -1,9 +1,5 @@
-from asyncio.windows_events import NULL
-from cgitb import reset
-from unittest import result
-from flask import jsonify
 from models.transaction import Transaction
-import db 
+import db
 import json
 
 def getAccount(username):

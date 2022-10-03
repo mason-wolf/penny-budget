@@ -2,9 +2,9 @@ import mysql.connector
 
 def getConnection():
     db = mysql.connector.connect(
-        host = "localhost",
+        host = "host.docker.internal",
         user="root",
-        password="Nosam419!",
+        password="",
         database="budgetapp"
     )
     return db

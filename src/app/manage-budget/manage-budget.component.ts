@@ -32,7 +32,7 @@ export class ManageBudgetComponent implements OnInit {
   @ViewChild('addBudgetDialog') addBudgetDialog: TemplateRef<any>;
   @ViewChild('manageCategoryDialog') manageCategoryDialog: TemplateRef<any>;
 
-  constructor(private budgetService: BudgetService, private dialog: MatDialog, private snackBar: MatSnackBar) { 
+  constructor(private budgetService: BudgetService, private dialog: MatDialog, private snackBar: MatSnackBar) {
     this.month = this.date.getMonth() + 1;
     this.year = this.date.getFullYear();
     this.currentUser = sessionStorage.getItem("username");
@@ -92,9 +92,10 @@ export class ManageBudgetComponent implements OnInit {
       this.budgetService.addBudget(budgetItem).subscribe(resp => {
         console.log(resp);
         this.dialog.closeAll();
-        this.getBudget();
-        this.getTotalBudget();
       })
+
+      this.getBudget();
+      this.getTotalBudget();
     }
   }
 

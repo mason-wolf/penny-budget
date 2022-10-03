@@ -1,7 +1,8 @@
 import datetime
+import json
 from flask import jsonify
 from models.transaction import Transaction
-import db 
+import db
 
 def addBudget(budget: Transaction):
     query = "insert into budgets (owner, category, archived, startDate, amount) values (%s, %s, %s, %s, %s)"
@@ -28,26 +29,27 @@ def getBudgetHistory(username):
 # Gets all budget items and amount spent per category
 # for a selected month and year.
 def getBudgetArchive(username, month, year):
-    archiveQuery = """ 
+    archiveQuery = """
         select budgets.id as id, budgets.category,
-        sum(case when transactions.owner = %s and MONTH(transactions.date) = %s and YEAR(transactions.date) = %s 
+        sum(case when transactions.owner = %s and MONTH(transactions.date) = %s and YEAR(transactions.date) = %s
         THEN transactions.amount else 0 END) as budgetSpent, budgets.amount as budgetAmount
-        from budgets left join transactions on budgets.category = transactions.category 
+        from budgets left join transactions on budgets.category = transactions.category
         where budgets.owner = %s and MONTH(budgets.startDate) = %s and YEAR(budgets.startDate) = %s
         group by budgets.category order by budgetSpent desc
         """
-    
+
     # Query for items that were spent in the timeframe but weren't in the budget.
     nonBudgetItems = """
         SELECT id, category, sum(case when archived = 1 and owner=%s then amount else 0 END) as budgetSpent, 0 as budgetAmount
 		FROM transactions WHERE category NOT IN (SELECT category FROM budgets where month(budgets.startDate) = %s and year(budgets.startDate) = %s and owner = %s)
 		AND owner = %s and month(transactions.date) = %s and year(transactions.date) = %s and category != 'Income' group by category
         """
-    
+
     archive = db.executeQuery(archiveQuery, (username, month, year, username, month, year,))
     notBudgeted = db.executeQuery(nonBudgetItems, (username, month, year, username, username, month, year,))
     for item in notBudgeted:
         archive.append(item)
+    print(json.dumps(archive, indent=2))
     return archive
 
 def getRemainingBalance(username, month, year):
@@ -72,7 +74,7 @@ def getTotalBudget(username):
     query = "SELECT SUM(amount) AS amount from budgets where owner=%s and archived = 0"
     result = db.executeQuery(query, (username,))
     return result[0]
-    
+
 def getBudgetByCategory(username, month, year):
     query = "select * from budgets where owner = %s and archived = 0 and MONTH(startDate) = %s and YEAR(startDate) = %s order by amount desc"
     result = db.executeQuery(query, (username, month, year))
@@ -87,7 +89,7 @@ def getActiveBudgets(username):
     query = "select * from budgets where owner=%s and archived = 0"
     result = db.executeQuery(query, (username,))
     return result
-    
+
 def addCategory(username, title):
     query = "insert into budgetCategories (owner, title) values (%s, %s)"
     db.executeCUD(query, (username, title))
