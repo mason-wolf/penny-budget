@@ -4,11 +4,14 @@
             <span style="width:100%;text-align:center;"><h1>Login</h1></span>
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 <input type="text" id="email" placeholder="Email" formControlName="email">
-                <input type="text" id="password" placeholder="Password" formControlName="password">
+                <input type="password" id="password" placeholder="Password" formControlName="password">
                 <button type="submit">Login</button>
             </form>
             <div *ngIf="errorMessage" class="error">
                 {{ errorMessage }}
+            </div>
+            <div class="login-issues">
+              <a [routerLink]="['/reset-password']">Can't login?</a>
             </div>
         </div>
     </div>

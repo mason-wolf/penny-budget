@@ -49,7 +49,6 @@ def getBudgetArchive(username, month, year):
     notBudgeted = db.executeQuery(nonBudgetItems, (username, month, year, username, username, month, year,))
     for item in notBudgeted:
         archive.append(item)
-    print(json.dumps(archive, indent=2))
     return archive
 
 def getRemainingBalance(username, month, year):

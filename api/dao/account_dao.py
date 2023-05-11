@@ -13,8 +13,6 @@ def getAccount(username):
 def archiveAccount(username, date):
 
     # Update the account with the new budget start date.
-    print(date)
-    print(username)
     accountQuery = "update accounts set budgetStartDate = %s where accountOwner = %s"
     db.executeCUD(accountQuery, (date, username,))
 
@@ -40,8 +38,6 @@ def getAmountEarned(username, month, year):
 def getTotalSpentByCategory(username, month, year):
     query = "select id, owner, archived, date, category, account, sum(amount) as amount from transactions where owner= %s and archived='0' and category != 'income' and MONTH(date) =%s and YEAR(date) = %s group by category order by category"
     result = db.executeQuery(query, (username, month, year,))
-    print(month, year)
-    print(result)
     if result == []:
         result = 0
     return result

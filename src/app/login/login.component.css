@@ -6,3 +6,8 @@
 .error {
     color: red;
 }
+
+.login-issues {
+  font-size: 12px;
+  margin-top: 10px !important;
+}

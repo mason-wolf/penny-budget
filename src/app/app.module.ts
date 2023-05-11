@@ -15,6 +15,7 @@ import { AuthInterceptor } from './shared/auth.interceptor';
 import { AccountActivityComponent } from './account-activity/account-activity.component';
 import { ManageBudgetComponent } from './manage-budget/manage-budget.component';
 import { BudgetHistoryComponent } from './budget-history/budget-history.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { BudgetHistoryComponent } from './budget-history/budget-history.componen
     AccountActivityComponent,
     ManageBudgetComponent,
     BudgetHistoryComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,

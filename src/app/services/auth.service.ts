@@ -17,10 +17,16 @@ export class AuthService {
   login(username: string, password: string) {
     return this.httpClient.post<any>(environment.apiEndpoint + "/login", JSON.stringify({username, password}))
       .subscribe((res: any) => {
-        localStorage.setItem('access_token', res.access_token);
-        sessionStorage.setItem('username', res.username);
-        this.router.navigate(['dashboard']);
+        if(!res["error"]) {
+          localStorage.setItem('access_token', res.access_token);
+          sessionStorage.setItem('username', res.username);
+          this.router.navigate(['dashboard']);
+        }
       })
+  }
+
+  resetPassword(username: string, old_password: string, new_password) {
+    return this.httpClient.post(environment.apiEndpoint + "/reset-password", JSON.stringify({username, old_password, new_password}))
   }
 
   logout() {
@@ -35,7 +41,7 @@ export class AuthService {
     let authToken = localStorage.getItem('access_token');
     return (authToken !== null) ? true : false;
   }
-  
+
   getToken() {
     return localStorage.getItem('access_token');
   }
