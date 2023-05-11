@@ -16,6 +16,7 @@ import { AccountActivityComponent } from './account-activity/account-activity.co
 import { ManageBudgetComponent } from './manage-budget/manage-budget.component';
 import { BudgetHistoryComponent } from './budget-history/budget-history.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { CreateAccountComponent } from './create-account/create-account.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     ManageBudgetComponent,
     BudgetHistoryComponent,
     ResetPasswordComponent,
+    CreateAccountComponent,
   ],
   imports: [
     BrowserModule,

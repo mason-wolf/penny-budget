@@ -7,12 +7,14 @@ import { LoginComponent } from './login/login.component';
 import { ManageBudgetComponent } from './manage-budget/manage-budget.component';
 import { AuthGuard } from './shared/auth.guard';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { CreateAccountComponent } from './create-account/create-account.component';
 
 // https://www.positronx.io/angular-jwt-user-authentication-tutorial/
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'create-account', component: CreateAccountComponent},
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   { path: 'reset-password', component: ResetPasswordComponent},
   { path: 'account-activity', component: AccountActivityComponent, canActivate: [AuthGuard]},

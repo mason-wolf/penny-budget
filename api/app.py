@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager
 from account import account_blueprint
 from budget import budget_blueprint
 from auth import auth_blueprint
+from user import user_blueprint
 
 index_blueprint = Blueprint('index', __name__,)
 
@@ -23,6 +24,8 @@ def create_app():
 
     # Home
     app.register_blueprint(index_blueprint)
+    # Users
+    app.register_blueprint(user_blueprint)
     # Accounts
     app.register_blueprint(account_blueprint)
     # Budgets

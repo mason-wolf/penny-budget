@@ -1,6 +1,33 @@
 from models.transaction import Transaction
 import db
 import json
+from datetime import date
+
+def addAccount(accountOwner):
+    query = "insert into accounts (accountOwner, accountName, accountType, isPrimary, balance, budgetStartDate, budgetEndDate) values (%s, %s, %s, %s, %s, %s, %s)"
+    # TODO: Allow user to add custom account names, types and eventually multiple accounts.
+    # Create user account.
+    db.executeCUD(query, (accountOwner, "main", "checking", 1, 0.0, str(date.today()), None,))
+
+    default_categories = [
+    "Auto & Transport",
+    "Food & Dining",
+    "Entertainment",
+    "Internet",
+    "Phone",
+    "Gas",
+    "Insurance",
+    "Utilities",
+    "Rent",
+    "Other",
+    "Personal Care"
+    ]
+
+    # Create default budget categories.
+    query = "insert into budgetcategories (title, owner) values (%s, %s)"
+    for category in default_categories:
+        db.executeCUD(query, (category, accountOwner,))
+    return {"status" : "success", "message" : "Created account for " + accountOwner + "."}
 
 def getAccount(username):
     query = "select * from accounts where accountOwner = %s and isPrimary = 1"
