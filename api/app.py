@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 from flask import Blueprint, Flask, send_from_directory
 from flask_cors import CORS
@@ -36,7 +37,8 @@ def create_app():
     # Dev environment config
     cors = CORS(app, resources={r"/*": {"origins": "*"}})
     app.config['CORS_HEADERS'] = 'Content-Type'
-    app.config['JWT_SECRET_KEY'] = "super-secret"
+    app.config['JWT_SECRET_KEY'] = "$2a$12$zONiXJp/wt6qRIf5H5ZMi.llhUnI95i4iwpV/FQljiL7gYxqdWVTm"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
     jwt = JWTManager(app)
     return app
 
