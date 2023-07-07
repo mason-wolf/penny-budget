@@ -18,6 +18,7 @@ import { Transaction } from '../shared/models/transaction.model';
 export class DashboardComponent implements OnInit {
 
   currentUser: string;
+  userId: string;
   balance: string;
   accountName: string;
   amountEarned: string;
@@ -53,8 +54,8 @@ export class DashboardComponent implements OnInit {
   @ViewChild('manageCategoryDialog') manageCategoryDialog: TemplateRef<any>;
 
   constructor(
-    private budgetService: BudgetService, 
-    private accountService: AccountService, 
+    private budgetService: BudgetService,
+    private accountService: AccountService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private router: Router) {
@@ -62,7 +63,7 @@ export class DashboardComponent implements OnInit {
     this.month = this.date.getMonth() + 1;
     this.year = this.date.getFullYear();
     this.currentUser = sessionStorage.getItem("username");
-
+    this.userId = sessionStorage.getItem("userId");
     // Add income form.
     this.incomeForm = new FormGroup({
       "incomeAmount" : new FormControl(this.incomeAmount, [
@@ -76,7 +77,7 @@ export class DashboardComponent implements OnInit {
     // Add transaction form.
     this.transactionForm = new FormGroup({
       "transactionAmount" : new FormControl(this.transactionAmount, [
-        Validators.required, 
+        Validators.required,
         Validators.pattern("^[0-9].*$")
       ]),
       "transactionCategory": new FormControl(this.transactionCategory, [
@@ -95,8 +96,7 @@ export class DashboardComponent implements OnInit {
 
   // Get account balance and account name.
   getAccount() {
-    this.accountService.getAccount(this.currentUser).subscribe(resp => {
-
+    this.accountService.getAccount(this.userId).subscribe(resp => {
       this.balance = formatCurrency(resp["balance"] as number, 'en', '$');
       this.accountName = resp["accountName"];
       let budgetStartDate = resp["budgetStartDate"];
@@ -111,7 +111,7 @@ export class DashboardComponent implements OnInit {
 
   // Get income earned this month.
   getIncome() {
-    this.accountService.getAmountEarned(this.currentUser, this.month, this.year).subscribe(resp => {
+    this.accountService.getAmountEarned(this.userId, this.month, this.year).subscribe(resp => {
       this.amountEarned = formatCurrency(resp as number, 'en', '$');
     })
   }
@@ -122,7 +122,7 @@ export class DashboardComponent implements OnInit {
       let totalSpent = 0;
       if (data == 0) {
         this.amountSpent = "$0.00";
-        // If nothing was spent this month, create template transactions by 
+        // If nothing was spent this month, create template transactions by
         // category from last month and rollover to this month.
         this.budgetItems.forEach(budgetItem => {
           let template = new Transaction();
@@ -133,7 +133,7 @@ export class DashboardComponent implements OnInit {
       }
       else {
         this.transactions = [];
-        // Get all transactions by category and calculate total spent.  
+        // Get all transactions by category and calculate total spent.
         Object.keys(data).forEach((key) => {
           let transaction = new Transaction();
           transaction.id = data[key].id;
@@ -179,7 +179,7 @@ export class DashboardComponent implements OnInit {
       })
     })
   }
-  
+
   viewSelectedArchive() {
     if (this.selectedArchive != null) {
       let date = new Date(this.selectedArchive);

@@ -10,15 +10,15 @@ from user import user_blueprint
 
 index_blueprint = Blueprint('index', __name__,)
 
-# Handle Angular Routing
+#Handle Angular Routing
 @index_blueprint.route('/', defaults={'path': ''})
-@index_blueprint.route('/<string:path>')
-@index_blueprint.route('/<path:path>')
-def static_proxy(path):
-    if os.path.isfile('templates/' + path):
-        return send_from_directory('templates', path)
-    else:
-        return send_from_directory("templates", "index.html")
+# @index_blueprint.route('/<string:path>')
+# @index_blueprint.route('/<path:path>')
+# def static_proxy(path):
+#     if os.path.isfile('templates/' + path):
+#         return send_from_directory('templates', path)
+#     else:
+#         return send_from_directory("templates", "index.html")
 
 def create_app():
     app = Flask(__name__)
@@ -44,4 +44,4 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(host="localhost", port=80)
+    app.run(host="localhost", port=80, debug=True)

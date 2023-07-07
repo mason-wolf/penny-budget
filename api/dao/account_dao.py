@@ -2,6 +2,7 @@ from models.transaction import Transaction
 import db
 import json
 from datetime import date
+from dao import user_dao
 
 def addAccount(accountOwner):
     query = "insert into accounts (accountOwner, accountName, accountType, isPrimary, balance, budgetStartDate, budgetEndDate) values (%s, %s, %s, %s, %s, %s, %s)"
@@ -29,9 +30,9 @@ def addAccount(accountOwner):
         db.executeCUD(query, (category, accountOwner,))
     return {"status" : "success", "message" : "Created account for " + accountOwner + "."}
 
-def getAccount(username):
-    query = "select * from accounts where accountOwner = %s and isPrimary = 1"
-    result = db.executeQuery(query, (username,))
+def getAccount(userId):
+    query = "select * from accounts where id = %s and isPrimary = 1"
+    result = db.executeQuery(query, (userId,))
     return result[0]
 
 # If a user signs on in the future and a budget already exists for a
@@ -52,9 +53,10 @@ def archiveAccount(username, date):
     db.executeCUD(transactionQuery, (username,))
     return "Account archived."
 
-def getAmountEarned(username, month, year):
+def getAmountEarned(userId, month, year):
+    user = user_dao.getUserbyId(userId)
     query = "select sum(amount) from transactions where owner= %s and month(date) = %s and year(date) = %s and category='Income'"
-    result = db.executeQuery(query, (username, month, year,))
+    result = db.executeQuery(query, (user["username"], month, year,))
     amount = json.dumps(result[0]["sum(amount)"])
     if amount == 'null':
         amount = 0

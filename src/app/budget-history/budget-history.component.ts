@@ -11,6 +11,7 @@ import { BudgetService } from '../services/budget.service';
 export class BudgetHistoryComponent implements OnInit {
 
   currentUser: string;
+  userId: string;
   budgetArchive : any[] = [];
   budgetDate: Date;
   month: number;
@@ -24,13 +25,14 @@ export class BudgetHistoryComponent implements OnInit {
 
   constructor(private budgetService: BudgetService, private router: ActivatedRoute, private accountService: AccountService) {
     this.currentUser = sessionStorage.getItem('username');
+    this.userId = sessionStorage.getItem('userId');
     this.month = Number(this.router.snapshot.paramMap.get('month'));
     this.year = Number(this.router.snapshot.paramMap.get('year'));
     this.budgetDate = new Date(this.year, this.month, 0, 1);
     this.getBudgetArchive();
     this.getIncome();
 
-    this.budgetService.getRemainingBalance(this.currentUser, this.month, this.year).subscribe(value => {
+    this.budgetService.getRemainingBalance(this.userId, this.month, this.year).subscribe(value => {
       this.remainingBalance = Number(value);
     })
   }
@@ -38,7 +40,6 @@ export class BudgetHistoryComponent implements OnInit {
   getBudgetArchive() {
     this.budgetArchive = [];
     this.budgetService.getBudgetArchive(this.currentUser, this.month, this.year).subscribe(value => {
-      console.log(value);
       Object.keys(value).forEach((key) => {
         this.budgetArchive.push(value[key]);
         this.totalBudget += value[key].budgetAmount;
@@ -48,7 +49,7 @@ export class BudgetHistoryComponent implements OnInit {
   }
 
   getIncome() {
-    this.accountService.getAmountEarned(this.currentUser, this.month, this.year).subscribe(value => {
+    this.accountService.getAmountEarned(this.userId, this.month, this.year).subscribe(value => {
       this.income = Number(value);
     })
   }

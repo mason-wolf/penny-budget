@@ -1,7 +1,6 @@
 from datetime import date
 import json
-
-import jwt
+from flask_jwt_extended import get_jwt_identity
 from models.transaction import Transaction
 from dao import account_dao
 from dao import budget_dao
@@ -10,33 +9,32 @@ from flask_jwt_extended import jwt_required
 
 account_blueprint = Blueprint('account', __name__,)
 
-@account_blueprint.route('/getAccount', methods=['POST'])
+@account_blueprint.route('/account/<id>', methods=['GET'])
 @jwt_required()
-def getAccount():
-    payload = request.data
-    payload = json.loads(payload)
-    username = payload["username"]
-    return jsonify(account_dao.getAccount(username))
-    
-@account_blueprint.route('/getAmountEarned', methods=['POST'])
-@jwt_required()
-def getAmountEarned():
-    payload = request.data
-    payload = json.loads(payload)
-    username = payload["username"]
-    month = payload["month"]
-    year = payload["year"]
-    return jsonify(account_dao.getAmountEarned(username, month, year))
+def getAccount(id):
+    user_id = get_jwt_identity()
+    if int(id) != int(user_id):
+        return jsonify({401 : "Unauthorized."})
+    else:
+        return jsonify(account_dao.getAccount(id))
 
-@account_blueprint.route('/getRemainingBalance', methods=['POST'])
+@account_blueprint.route('/account/<id>/income/<year>/<month>', methods=['GET'])
 @jwt_required()
-def getRemainingBalance():
-    payload = request.data
-    payload = json.loads(payload)
-    username = payload["username"]
-    month = payload["month"]
-    year = payload["year"]
-    return jsonify(budget_dao.getRemainingBalance(username, month, year))
+def getAmountEarned(id, year, month):
+    user_id = get_jwt_identity()
+    if int(id) != int(user_id):
+        return jsonify({401 : "Unauthorized."})
+    else:
+        return jsonify(account_dao.getAmountEarned(id, month, year))
+
+@account_blueprint.route('/account/<id>/balance/<year>/<month>', methods=['GET'])
+@jwt_required()
+def getRemainingBalance(id, year, month):
+    user_id = get_jwt_identity()
+    if int(id) != int(user_id):
+        return jsonify({401 : "Unauthorized."})
+    else:
+        return jsonify(budget_dao.getRemainingBalance(id, month, year))
 
 @account_blueprint.route('/getTotalSpentByCategory', methods=['POST'])
 @jwt_required()
@@ -101,4 +99,4 @@ def JSONToTransaction(json):
     transaction.date = json['transaction']["date"]
     transaction.category = json['transaction']["category"]
     transaction.account = json['transaction']["account"]
-    return transaction    
+    return transaction

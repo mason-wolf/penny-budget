@@ -17,8 +17,8 @@ def login():
     valid_login = checkPassword(user_password, provided_password)
     if (provided_password) is not None:
         if (valid_login):
-            access_token = create_access_token(identity=payload["username"])
-            return jsonify(access_token=access_token, username=payload["username"])
+            access_token = create_access_token(identity=user['id'])
+            return jsonify(access_token=access_token, username=payload["username"], userId=user["id"])
         else:
              return jsonify({"error": "Bad username or password"})
 

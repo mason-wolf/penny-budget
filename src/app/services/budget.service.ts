@@ -9,7 +9,7 @@ import { Transaction } from '../shared/models/transaction.model';
 export class BudgetService {
 
   headers = new HttpHeaders().set('Content-Type', 'application-json');
-  
+
   constructor(private httpClient: HttpClient) { }
 
   addBudget(budgetItem: Transaction) {
@@ -25,7 +25,7 @@ export class BudgetService {
   }
 
   getRemainingBalance(username: string, month: number, year: number) {
-    return this.httpClient.post(environment.apiEndpoint + '/getRemainingBalance', { "username" : username, "month" : month, "year" : year });
+    return this.httpClient.get(environment.apiEndpoint + '/account/' + username + "/balance/" + year + "/" + month);
   }
 
   getBudgetArchive(username: string, month: number, year: number) {

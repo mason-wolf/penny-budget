@@ -11,12 +11,12 @@ export class AccountService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getAccount(username: string) {
-    return this.httpClient.post(environment.apiEndpoint + '/getAccount', { "username" : username });
+  getAccount(userId: string) {
+    return this.httpClient.get(environment.apiEndpoint + '/account/' + userId);
   }
 
-  getAmountEarned(username: string, month: number, year: number) {
-    return this.httpClient.post(environment.apiEndpoint + '/getAmountEarned', { "username" : username, "month" : month, "year" : year});
+  getAmountEarned(userId: string, month: number, year: number) {
+    return this.httpClient.get(environment.apiEndpoint + '/account/' + userId + "/income/" + year + "/" + month);
   }
 
   getTotalSpentByCategory(username: string, month: number, year: number) {

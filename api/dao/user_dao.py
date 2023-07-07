@@ -13,6 +13,14 @@ def getUser(username):
     else:
         return {"error" : "User not found."}
 
+def getUserbyId(userId):
+    query = "SELECT * FROM users where id=%s"
+    result = db.executeQuery(query, (userId,))
+    if (len(result) > 0):
+        return result[0]
+    else:
+        return {"error" : "User not found."}
+    
 def resetPassword(username, password):
     query = "update users set password=%s where username=%s"
     result = db.executeCUD(query, ((password, username,)))

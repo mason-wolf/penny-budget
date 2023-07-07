@@ -20,6 +20,7 @@ export class AuthService {
         if(!res["error"]) {
           localStorage.setItem('access_token', res.access_token);
           sessionStorage.setItem('username', res.username);
+          sessionStorage.setItem('userId', res.userId);
           this.router.navigate(['dashboard']);
         }
       })

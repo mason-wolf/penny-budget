@@ -3,6 +3,7 @@ import json
 from flask import jsonify
 from models.transaction import Transaction
 import db
+from dao import user_dao
 
 def addBudget(budget: Transaction):
     query = "insert into budgets (owner, category, archived, startDate, amount) values (%s, %s, %s, %s, %s)"
@@ -51,7 +52,9 @@ def getBudgetArchive(username, month, year):
         archive.append(item)
     return archive
 
-def getRemainingBalance(username, month, year):
+def getRemainingBalance(userId, month, year):
+    month = int(month)
+    year = int(year)
     query = """
         SELECT (income.earned - spent.spent) as BALANCE FROM
         (SELECT SUM(amount) as earned FROM transactions WHERE owner=%s
@@ -65,8 +68,9 @@ def getRemainingBalance(username, month, year):
         year = year + 1
     else:
         month = month + 1
+    user = user_dao.getUserbyId(userId)
     date = datetime.datetime(year, month, 1).date()
-    result = db.executeQuery(query, (username, date, username, date,))
+    result = db.executeQuery(query, (user["username"], date, user["username"], date,))
     return result[0]["BALANCE"]
 
 def getTotalBudget(username):
