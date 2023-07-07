@@ -11,19 +11,23 @@ def getConnection():
     return db
 
 def executeQuery(query, params):
-    conn = getConnection()
-    cursor = conn.cursor()
-    cursor.execute(query, params)
-    columns = cursor.description
-    result = []
-    for value in cursor.fetchall():
-        tmp = {}
-        for (index,column) in enumerate(value):
-            tmp[columns[index][0]] = column
-        result.append(tmp)
-    cursor.close()
-    conn.close()
-    return result
+    try:
+      conn = getConnection()
+      cursor = conn.cursor()
+      cursor.execute(query, params)
+      columns = cursor.description
+      result = []
+      for value in cursor.fetchall():
+          tmp = {}
+          for (index,column) in enumerate(value):
+              tmp[columns[index][0]] = column
+          result.append(tmp)
+      cursor.close()
+      conn.close()
+      return result
+    except Exception as e:
+        print(e)
+        return []
 
 def executeCUD(query, params):
     conn = getConnection()

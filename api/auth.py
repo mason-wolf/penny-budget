@@ -8,12 +8,16 @@ auth_blueprint = Blueprint('auth', __name__,)
 
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
+
     payload = request.data
     payload = json.loads(payload)
     username = payload["username"]
-    user = userDb.getUser(username)
-    user_password = user["password"]
-    provided_password = payload["password"]
+    try:
+      user = userDb.getUser(username)
+      user_password = user["password"]
+      provided_password = payload["password"]
+    except Exception as e:
+        return jsonify({"error" : "Something went wrong"})
     valid_login = checkPassword(user_password, provided_password)
     if (provided_password) is not None:
         if (valid_login):
