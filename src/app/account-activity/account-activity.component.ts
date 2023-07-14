@@ -14,7 +14,7 @@ import { Transaction } from '../shared/models/transaction.model';
 export class AccountActivityComponent implements OnInit {
 
   currentUser: string;
-
+  userId = sessionStorage.getItem("userId");
   dataSource = new MatTableDataSource();
   displayedColumns : string[] = ["date", "category", "amount", "deleteAction"]
   transactions : Transaction[] = []
@@ -28,7 +28,7 @@ export class AccountActivityComponent implements OnInit {
    }
 
   getTransactionHistory() {
-    this.accountService.getTransactionHistory(this.currentUser).subscribe(data => {
+    this.accountService.getTransactionHistory(this.userId).subscribe(data => {
       Object.keys(data).forEach((key) => {
         this.transactions.push(data[key])
       })
@@ -45,7 +45,7 @@ export class AccountActivityComponent implements OnInit {
   }
 
   deleteTransaction(transaction) {
-    this.accountService.deleteTransaction(transaction).subscribe(resp => {
+    this.accountService.deleteTransaction(this.userId, transaction).subscribe(resp => {
       this.transactions = [];
       this.getTransactionHistory();
     })

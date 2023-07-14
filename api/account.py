@@ -36,43 +36,48 @@ def getRemainingBalance(id, year, month):
     else:
         return jsonify(budget_dao.getRemainingBalance(id, month, year))
 
-@account_blueprint.route('/getTotalSpentByCategory', methods=['POST'])
+@account_blueprint.route('/account/<id>/summary/<year>/<month>', methods=['GET'])
 @jwt_required()
-def getTotalSpentByCategory():
-    payload = request.data
-    payload = json.loads(payload)
-    username = payload["username"]
-    month = payload["month"]
-    year = payload["year"]
-    return jsonify(account_dao.getTotalSpentByCategory(username, month, year))
+def getTotalSpentByCategory(id, year, month):
+    user_id = get_jwt_identity()
+    if int(id) != int(user_id):
+        return jsonify({401: "Unauthorized."})
+    else:
+        return jsonify(account_dao.getTotalSpentByCategory(id, month, year))
 
-@account_blueprint.route('/getTransactionHistory', methods=['POST'])
+@account_blueprint.route('/account/<id>/transactions/', methods=['GET'])
 @jwt_required()
-def getTransactionHistory():
-    payload = request.data
-    payload = json.loads(payload)
-    username = payload["username"]
-    return jsonify(account_dao.getTransactionHistory(username))
+def getTransactionHistory(id):
+    user_id = get_jwt_identity()
+    if int(id) != int(user_id):
+        return jsonify({401 : "Unauthorized."})
+    else:
+        return jsonify(account_dao.getTransactionHistory(id))
 
-@account_blueprint.route('/addTransaction', methods=['POST'])
+@account_blueprint.route('/account/<id>/transaction/', methods=['POST'])
 @jwt_required()
-def addTransaction():
-    payload = request.data
-    payload = json.loads(payload)
-    transaction = JSONToTransaction(payload)
-    return jsonify(account_dao.addTransaction(transaction))
+def addTransaction(id):
+    user_id = get_jwt_identity()
+    if int(id) != int(user_id):
+        return jsonify({401: "Unauthorized."})
+    else:
+      payload = request.data
+      payload = json.loads(payload)
+      transaction = JSONToTransaction(payload)
+      return jsonify(account_dao.addTransaction(transaction))
 
-@account_blueprint.route('/deleteTransaction', methods=['DELETE'])
+@account_blueprint.route('/account/<id>/transaction/', methods=['DELETE'])
 @jwt_required()
-def deleteTransaction():
-    payload = request.data
-    payload = json.loads(payload)
-    transaction = JSONToTransaction(payload)
-    return jsonify(account_dao.deleteTransaction(transaction))
-
-def deleteTransaction(transactionId):
-    return account_dao.deleteTransaction(transactionId)
-
+def deleteTransaction(id):
+    user_id = get_jwt_identity()
+    if int(id) != int(user_id):
+        return jsonify({401: "Unauthorized."})
+    else:
+      payload = request.data
+      payload = json.loads(payload)
+      transaction = JSONToTransaction(payload)
+      return jsonify(account_dao.deleteTransaction(transaction))
+    
 @account_blueprint.route('/archiveAccount', methods=["POST"])
 @jwt_required()
 def archiveAccount():
@@ -98,5 +103,5 @@ def JSONToTransaction(json):
     transaction.archived = json['transaction']["archived"]
     transaction.date = json['transaction']["date"]
     transaction.category = json['transaction']["category"]
-    transaction.account = json['transaction']["account"]
+    transaction.account = "main"
     return transaction

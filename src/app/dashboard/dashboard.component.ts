@@ -118,7 +118,7 @@ export class DashboardComponent implements OnInit {
 
   getSpent() {
     this.transactions = [];
-    this.accountService.getTotalSpentByCategory(this.currentUser, this.month, this.year).subscribe(data => {
+    this.accountService.getTotalSpentByCategory(this.userId, this.month, this.year).subscribe(data => {
       let totalSpent = 0;
       if (data == 0) {
         this.amountSpent = "$0.00";
@@ -244,7 +244,7 @@ export class DashboardComponent implements OnInit {
       transaction.date = this.incomeDate;
       transaction.category = 'Income';
       transaction.account = null;
-      this.accountService.addTransaction(transaction).subscribe(res => {
+      this.accountService.addTransaction(this.userId, transaction).subscribe(res => {
         this.getAccount();
         this.getIncome();
       })
@@ -304,7 +304,7 @@ export class DashboardComponent implements OnInit {
         transaction.archived = 0;
       }
 
-      this.accountService.addTransaction(transaction).subscribe(resp => {
+      this.accountService.addTransaction(this.userId, transaction).subscribe(resp => {
         this.snackBar.open("Transaction added.", "OK", {"duration" : 2000});
         this.getAccount();
         this.getBudget();

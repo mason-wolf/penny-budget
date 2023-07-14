@@ -31,9 +31,13 @@ def addAccount(accountOwner):
     return {"status" : "success", "message" : "Created account for " + accountOwner + "."}
 
 def getAccount(userId):
-    query = "select * from accounts where id = %s and isPrimary = 1"
-    result = db.executeQuery(query, (userId,))
-    return result[0]
+    user = user_dao.getUserbyId(userId)
+    query = "select * from accounts where accountOwner = %s and isPrimary = 1"
+    result = db.executeQuery(query, (user["username"],))
+    if len(result) == 0:
+        return None
+    else:
+        return result[0]
 
 # If a user signs on in the future and a budget already exists for a
 # previous month, archive those transactions and budgets so the user can create a new one.
@@ -64,16 +68,18 @@ def getAmountEarned(userId, month, year):
 
 # Get total spent by category that has not been archived.
 # Archived transactions are historic (previous months).
-def getTotalSpentByCategory(username, month, year):
+def getTotalSpentByCategory(id, month, year):
+    user = user_dao.getUserbyId(id)
     query = "select id, owner, archived, date, category, account, sum(amount) as amount from transactions where owner= %s and archived='0' and category != 'income' and MONTH(date) =%s and YEAR(date) = %s group by category order by category"
-    result = db.executeQuery(query, (username, month, year,))
+    result = db.executeQuery(query, (user["username"], month, year,))
     if result == []:
         result = 0
     return result
 
-def getTransactionHistory(username):
+def getTransactionHistory(id):
+    user = user_dao.getUserbyId(id)
     query = "select * from transactions where owner= %s order by id desc limit 100"
-    result = db.executeQuery(query, (username,))
+    result = db.executeQuery(query, (user["username"],))
     return result
 
 def addTransaction(transaction: Transaction):

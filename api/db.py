@@ -5,7 +5,7 @@ def getConnection():
         host = "localhost",
         #host = "host.docker.internal",
         user="root",
-        password="",
+        password="Nosam419!",
         database="budgetapp"
     )
     return db

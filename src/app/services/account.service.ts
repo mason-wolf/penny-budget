@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Transaction } from '../shared/models/transaction.model';
 
@@ -19,19 +18,19 @@ export class AccountService {
     return this.httpClient.get(environment.apiEndpoint + '/account/' + userId + "/income/" + year + "/" + month);
   }
 
-  getTotalSpentByCategory(username: string, month: number, year: number) {
-    return this.httpClient.post(environment.apiEndpoint + '/getTotalSpentByCategory', { "username" : username, "month" : month, "year" : year});
+  getTotalSpentByCategory(userId: string, month: number, year: number) {
+    return this.httpClient.get(environment.apiEndpoint + '/account/' + userId + "/summary/" + year +"/" + month);
   }
 
-  getTransactionHistory(username: string) {
-    return this.httpClient.post(environment.apiEndpoint + "/getTransactionHistory", { "username" : username });
+  getTransactionHistory(userId: string) {
+    return this.httpClient.get(environment.apiEndpoint + "/account/" + userId + "/transactions/");
   }
 
-  addTransaction(transaction: Transaction) {
-    return this.httpClient.post(environment.apiEndpoint + '/addTransaction', { transaction });
+  addTransaction(userId: string, transaction: Transaction) {
+    return this.httpClient.post(environment.apiEndpoint + "/account/" + userId + "/transaction/", { transaction });
   }
 
-  deleteTransaction(transaction) {
+  deleteTransaction(userId: string, transaction) {
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -40,7 +39,7 @@ export class AccountService {
         transaction: transaction
       }
     }
-    return this.httpClient.delete(environment.apiEndpoint + '/deleteTransaction', options);
+    return this.httpClient.delete(environment.apiEndpoint + "/account/" + userId + "/transaction/", options);
   }
 
   archiveAccount(username: string) {
