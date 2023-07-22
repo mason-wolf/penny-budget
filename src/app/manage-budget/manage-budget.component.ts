@@ -15,6 +15,7 @@ export class ManageBudgetComponent implements OnInit {
 
   budgetItems: Budget[] = [];
   currentUser: string;
+  userId: string;
   date = new Date();
   month: number;
   year: number;
@@ -36,6 +37,7 @@ export class ManageBudgetComponent implements OnInit {
     this.month = this.date.getMonth() + 1;
     this.year = this.date.getFullYear();
     this.currentUser = sessionStorage.getItem("username");
+    this.userId = sessionStorage.getItem("userId")
     this.getBudget();
     this.getCategories();
     this.getTotalBudget();
@@ -44,7 +46,8 @@ export class ManageBudgetComponent implements OnInit {
 
   getBudget() {
     this.budgetItems = [];
-    this.budgetService.getBudgetByCategory(this.currentUser, this.month, this.year).subscribe(data => {
+    this.budgetService.getBudgetByCategory(this.userId, this.month, this.year).subscribe(data => {
+      console.log(data);
       Object.keys(data).forEach((key) => {
         let budget = new Budget();
         budget.id = data[key].id;

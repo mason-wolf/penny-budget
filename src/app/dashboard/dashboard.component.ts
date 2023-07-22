@@ -102,7 +102,7 @@ export class DashboardComponent implements OnInit {
       let budgetStartDate = resp["budgetStartDate"];
 
       if (this.monthLapsed(new Date(budgetStartDate))) {
-        this.accountService.archiveAccount(this.currentUser).subscribe(value => {
+        this.accountService.archiveAccount(this.userId, this.currentUser).subscribe(value => {
           console.log(value);
         });
       }
@@ -170,7 +170,8 @@ export class DashboardComponent implements OnInit {
 
   getBudget() {
     this.budgetItems = [];
-    this.budgetService.getBudgetByCategory(this.currentUser, this.month, this.year).subscribe(data => {
+    this.budgetService.getBudgetByCategory(this.userId, this.month, this.year).subscribe(data => {
+      console.log(data);
       Object.keys(data).forEach((key) => {
         let budget = new Budget();
         budget.amount = data[key].amount;

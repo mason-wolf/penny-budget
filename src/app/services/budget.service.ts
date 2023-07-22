@@ -16,8 +16,8 @@ export class BudgetService {
     return this.httpClient.post(environment.apiEndpoint + '/addBudget', {budgetItem})
   }
 
-  getBudgetByCategory(username: string, month: number, year: number) {
-    return this.httpClient.post(environment.apiEndpoint + '/getBudgetByCategory', { "username" : username, "month" : month, "year" : year });
+  getBudgetByCategory(userId: string, month: number, year: number) {
+    return this.httpClient.get(environment.apiEndpoint + '/budget/' + userId + "/" + year + "/" + month);
   }
 
   getBudgetHistory(username: string) {

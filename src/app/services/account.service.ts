@@ -42,7 +42,7 @@ export class AccountService {
     return this.httpClient.delete(environment.apiEndpoint + "/account/" + userId + "/transaction/", options);
   }
 
-  archiveAccount(username: string) {
-    return this.httpClient.post(environment.apiEndpoint + '/archiveAccount', { "username" : username })
+  archiveAccount(userId: string, username: string) {
+    return this.httpClient.post(environment.apiEndpoint + '/account/' + userId + '/archive/', { "username" : username })
   }
 }

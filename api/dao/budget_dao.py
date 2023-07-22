@@ -78,9 +78,10 @@ def getTotalBudget(username):
     result = db.executeQuery(query, (username,))
     return result[0]
 
-def getBudgetByCategory(username, month, year):
+def getBudgetByCategory(userId, year, month):
+    user = user_dao.getUserbyId(userId)
     query = "select * from budgets where owner = %s and archived = 0 and MONTH(startDate) = %s and YEAR(startDate) = %s order by amount desc"
-    result = db.executeQuery(query, (username, month, year))
+    result = db.executeQuery(query, (user["username"], month, year,))
     return result
 
 def getBudgetCategories(username):

@@ -77,23 +77,27 @@ def deleteTransaction(id):
       payload = json.loads(payload)
       transaction = JSONToTransaction(payload)
       return jsonify(account_dao.deleteTransaction(transaction))
-    
-@account_blueprint.route('/archiveAccount', methods=["POST"])
+
+@account_blueprint.route('/account/<id>/archive/', methods=["POST"])
 @jwt_required()
-def archiveAccount():
-    payload = request.data
-    payload = json.loads(payload)
-    activeBudgets = budget_dao.getActiveBudgets(payload["username"])
-    today = date.today()
-    account_dao.archiveAccount(payload["username"], today.strftime("%Y-%m-%d"))
-    for budgetItem in activeBudgets:
-        transaction = Transaction()
-        transaction.owner = budgetItem["owner"]
-        transaction.category = budgetItem["category"]
-        transaction.date = today.strftime("%Y-%m-%d")
-        transaction.amount = budgetItem["amount"]
-        budget_dao.addBudget(transaction)
-    return jsonify("Account archived.")
+def archiveAccount(id):
+    user_id = get_jwt_identity()
+    if int(id) != int(user_id):
+        return jsonify({401: "Unauthorized."})
+    else:
+        payload = request.data
+        payload = json.loads(payload)
+        activeBudgets = budget_dao.getActiveBudgets(payload["username"])
+        today = date.today()
+        account_dao.archiveAccount(payload["username"], today.strftime("%Y-%m-%d"))
+        for budgetItem in activeBudgets:
+            transaction = Transaction()
+            transaction.owner = budgetItem["owner"]
+            transaction.category = budgetItem["category"]
+            transaction.date = today.strftime("%Y-%m-%d")
+            transaction.amount = budgetItem["amount"]
+            budget_dao.addBudget(transaction)
+        return jsonify("Account archived.")
 
 def JSONToTransaction(json):
     transaction = Transaction()

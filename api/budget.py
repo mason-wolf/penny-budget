@@ -3,20 +3,18 @@ import json
 from flask import Blueprint, jsonify, request
 from models.transaction import Transaction
 from dao import budget_dao
-from flask_jwt_extended import jwt_required
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 budget_blueprint = Blueprint('budget', __name__,)
 
 # Gets all budget items by specified month and year.
-@budget_blueprint.route('/getBudgetByCategory', methods=['POST'])
+@budget_blueprint.route('/budget/<id>/<year>/<month>', methods=['GET'])
 @jwt_required()
-def getBudgetByCategory():
-    payload = request.data
-    payload = json.loads(payload)
-    username = payload["username"]
-    month = payload["month"]
-    year = payload["year"]
-    return jsonify(budget_dao.getBudgetByCategory(username, month, year))
+def getBudgetByCategory(id, year, month):
+    user_id = get_jwt_identity()
+    if int(id) != int(user_id):
+        return jsonify({401 : "Unauthorized."})
+    else:
+      return jsonify(budget_dao.getBudgetByCategory(id, year, month))
 
 # Gets all budget categories.
 @budget_blueprint.route('/getBudgetCategories', methods=["POST"])
