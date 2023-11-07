@@ -5,6 +5,7 @@ import { BudgetService } from '../services/budget.service';
 import { Budget } from '../shared/models/budget.model';
 import { Category } from '../shared/models/category.model';
 import { Transaction } from '../shared/models/transaction.model';
+import { AccountService } from '../services/account.service';
 
 @Component({
   selector: 'app-manage-budget',
@@ -21,7 +22,7 @@ export class ManageBudgetComponent implements OnInit {
   year: number;
 
   totalBudget;
-  monthlyIncome;
+  monthlyIncome: number;
   errorMessage;
 
   categories : Category[] = [];
@@ -33,7 +34,11 @@ export class ManageBudgetComponent implements OnInit {
   @ViewChild('addBudgetDialog') addBudgetDialog: TemplateRef<any>;
   @ViewChild('manageCategoryDialog') manageCategoryDialog: TemplateRef<any>;
 
-  constructor(private budgetService: BudgetService, private dialog: MatDialog, private snackBar: MatSnackBar) {
+  constructor(
+    private budgetService: BudgetService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private accountService: AccountService) {
     this.month = this.date.getMonth() + 1;
     this.year = this.date.getFullYear();
     this.currentUser = sessionStorage.getItem("username");
@@ -41,7 +46,7 @@ export class ManageBudgetComponent implements OnInit {
     this.getBudget();
     this.getCategories();
     this.getTotalBudget();
-    this.monthlyIncome = localStorage.getItem("monthlyIncome");
+    this.getIncome();
   }
 
   getBudget() {
@@ -108,6 +113,12 @@ export class ManageBudgetComponent implements OnInit {
     })
   }
 
+  getIncome() {
+    this.accountService.getMonthlyIncome(this.userId).subscribe(resp => {
+      this.monthlyIncome = Number(resp)
+    });
+  }
+
   updateIncome() {
     let valid = false;
     let validator: RegExp = /^[0-9].*$/;
@@ -115,7 +126,10 @@ export class ManageBudgetComponent implements OnInit {
     if (this.monthlyIncome != null && validator.test(this.monthlyIncome.toString())) {
       valid = true;
       this.dialog.closeAll();
-      localStorage.setItem("monthlyIncome", this.monthlyIncome.toString());
+   //   localStorage.setItem("monthlyIncome", this.monthlyIncome.toString());
+      this.accountService.updateMonthlyIncome(this.userId, this.monthlyIncome).subscribe(resp => {
+        console.log(resp);
+      })
     }
     return valid;
   }

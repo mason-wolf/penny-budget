@@ -14,6 +14,14 @@ export class AccountService {
     return this.httpClient.get(environment.apiEndpoint + '/account/' + userId);
   }
 
+  getMonthlyIncome(userId: string) {
+    return this.httpClient.get(environment.apiEndpoint + '/account/' + userId + "/income/");
+  }
+
+  updateMonthlyIncome(userId: string, amount: number) {
+    return this.httpClient.put(environment.apiEndpoint + "/account/" + userId, { "amount" : amount });
+  }
+
   getAmountEarned(userId: string, month: number, year: number) {
     return this.httpClient.get(environment.apiEndpoint + '/account/' + userId + "/income/" + year + "/" + month);
   }

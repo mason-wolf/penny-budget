@@ -40,6 +40,20 @@ def get_total_spent_by_category(id, year, month):
 def get_transaction_history(id):
     return jsonify(account_dao.get_transaction_history(id))
 
+@account_blueprint.route("/account/<id>/income/", methods=['GET'])
+@jwt_required()
+@requires_auth
+def get_monthly_income(id):
+    return jsonify(account_dao.get_monthly_income(id))
+
+@account_blueprint.route('/account/<id>', methods=['PUT'])
+@jwt_required()
+@requires_auth
+def update_monthly_income(id):
+    payload = request.data
+    payload = json.loads(payload)
+    return jsonify(account_dao.update_monthly_income(id, payload["amount"]))
+
 @account_blueprint.route('/account/<id>/transaction/', methods=['POST'])
 @jwt_required()
 @requires_auth

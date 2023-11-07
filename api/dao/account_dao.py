@@ -39,6 +39,21 @@ def get_account(userId):
     else:
         return result[0]
 
+def get_monthly_income(userId):
+    user = user_dao.get_user_by_id(userId)
+    query = "select monthlyIncome from accounts where accountOwner=%s"
+    result = db.execute_query(query, (user["username"],))
+    amount = result[0]["monthlyIncome"]
+    if amount == 'null':
+        amount = 0
+    return amount
+
+def update_monthly_income(userId, amount):
+    user = user_dao.get_user_by_id(userId)
+    query = "update accounts set monthlyIncome = %s where accountOwner = %s"
+    result = db.execute_CUD(query, (amount, user["username"],))
+    return "Monthly income updated."
+
 # If a user signs on in the future and a budget already exists for a
 # previous month, archive those transactions and budgets so the user can create a new one.
 # Where date is the new budget start date.
