@@ -16,9 +16,8 @@ def create_user():
     username = payload["username"]
     password = payload["password"]
     user = user_dao.get_user(username)
-    print(user)
     result = {}
-    if 'id' in user:
+    try:
         # Only create user if user doesn't exist.
         password = password.encode('utf-8')
         salt = bcrypt.gensalt(prefix=b"2a")
@@ -28,6 +27,6 @@ def create_user():
         # Create account for user.
         account_dao.add_account(username)
         result = {"success" : "User created."}
-    else:
-        result = {"error" : "User already exists."}
+    except Exception:
+                result = {"error" : "User already exists."}
     return jsonify(result)

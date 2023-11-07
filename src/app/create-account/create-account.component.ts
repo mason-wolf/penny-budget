@@ -24,9 +24,15 @@ export class CreateAccountComponent implements OnInit {
   onSubmit() {
     let email = this.accountForm.get('email').value;
     let password = this.accountForm.get('password').value;
+
     if (email != null && password != null) {
       this.authService.createaccount(email, password).subscribe(res => {
-        this.successMessage = "Account created!";
+        if (res["error"]) {
+          this.errorMessage = "User already exists.";
+        }
+        else {
+              this.successMessage = "Account created!";
+        }
       });
     }
     else {
