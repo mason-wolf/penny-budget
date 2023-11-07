@@ -171,7 +171,6 @@ export class DashboardComponent implements OnInit {
   getBudget() {
     this.budgetItems = [];
     this.budgetService.getBudgetByCategory(this.userId, this.month, this.year).subscribe(data => {
-      console.log(data);
       Object.keys(data).forEach((key) => {
         let budget = new Budget();
         budget.amount = data[key].amount;
@@ -306,6 +305,7 @@ export class DashboardComponent implements OnInit {
       }
 
       this.accountService.addTransaction(this.userId, transaction).subscribe(resp => {
+        console.log(resp)
         this.snackBar.open("Transaction added.", "OK", {"duration" : 2000});
         this.getAccount();
         this.getBudget();

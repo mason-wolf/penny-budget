@@ -1,8 +1,10 @@
+from functools import wraps
 import json
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import create_access_token
 from dao import user_dao as userDb
 import bcrypt
+from flask_jwt_extended import get_jwt_identity
 
 auth_blueprint = Blueprint('auth', __name__,)
 
@@ -59,3 +61,17 @@ def check_password(user_password, provided_password):
     result = bcrypt.checkpw(provided_password, user_password)
     return result
 
+def requires_auth(f):
+    """
+    If a user is authenticated, check if they're
+    authorized to access this endpoint.
+    """
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        # Does the requested id match their identity?
+        user_id = get_jwt_identity()
+        if (int(user_id) != int(kwargs["id"])):
+          # Unauthorized
+          abort(401)
+        return f(*args, **kwargs)
+    return decorated

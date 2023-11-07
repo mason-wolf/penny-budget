@@ -14,12 +14,12 @@
               <th style="border-right:none;">Projected</th>
               <tr *ngFor="let budget of budgetItems">
                 <td>{{ budget.category }}</td>
-                <td style="border-right:none;">{{ budget.amount | currency}}</td>
+                <td style="border-right:none;" class="money">{{ budget.amount | currency}}</td>
                 <td style="text-align:center;border-left: none;"><a [routerLink]="" (click)="deleteBudgetItem(budget)">Remove</a></td>
               </tr>
               <tr>
                 <th>Monthly Income</th>
-                <td style="border-right: none;">
+                <td style="border-right: none;" class="money">
                   {{ monthlyIncome | currency }}
                 </td>
                 <td style="text-align: center;border-left: none;">
@@ -28,12 +28,12 @@
               </tr>
               <tr>
                 <th>Total Budget</th>
-                <td style="border-right: none;">{{ totalBudget | currency }}</td>
+                <td style="border-right: none;" class="money">{{ totalBudget | currency }}</td>
                 <td style="border-left: none;"></td>
               </tr>
               <tr>
                 <th>Projected Savings</th>
-                <td style="border-right: none;">{{ calculateSavings(monthlyIncome, totalBudget) | currency}}</td>
+                <td style="border-right: none;" class="money">{{ calculateSavings(monthlyIncome, totalBudget) | currency}}</td>
                 <td style="border-left: none;"></td>
               </tr>
             </table>

@@ -37,11 +37,16 @@ button {
   font-size: 18px;
   padding: 0.4em;
   color: rgb(90, 90, 90);
+  font-family: 'Urbanist', sans-serif;
 }
 
 .budgetTable td {
     padding: .4em;
     border-bottom: 1px solid #ccc;
+    font-family: 'Urbanist', sans-serif;
+    color: rgb(90, 90, 90);
+    font-size: 18px;
+    font-weight: 500;
 }
 
 h1 {
@@ -60,12 +65,15 @@ h2, .money {
   font-family: 'Kanit', sans-serif;
   color: rgb(90, 90, 90);
   font-weight: 200 !important;
+}
+
+h2 .money {
   font-size:30px;
 }
 
 .money {
-  font-weight: 200 !important;
-  font-size: 20px;
+  font-weight: 300 !important;
+  font-size: 18x;
 }
 
 a {
