@@ -37,7 +37,7 @@ export class ManageBudgetComponent implements OnInit {
     this.month = this.date.getMonth() + 1;
     this.year = this.date.getFullYear();
     this.currentUser = sessionStorage.getItem("username");
-    this.userId = sessionStorage.getItem("userId")
+    this.userId = sessionStorage.getItem("userId");
     this.getBudget();
     this.getCategories();
     this.getTotalBudget();
@@ -47,7 +47,6 @@ export class ManageBudgetComponent implements OnInit {
   getBudget() {
     this.budgetItems = [];
     this.budgetService.getBudgetByCategory(this.userId, this.month, this.year).subscribe(data => {
-      console.log(data);
       Object.keys(data).forEach((key) => {
         let budget = new Budget();
         budget.id = data[key].id;
@@ -60,7 +59,7 @@ export class ManageBudgetComponent implements OnInit {
 
   getCategories() {
     this.categories = [];
-    this.budgetService.getBudgetCategories(this.currentUser).subscribe(data => {
+    this.budgetService.getBudgetCategories(this.userId).subscribe(data => {
       Object.keys(data).forEach((key) => {
         let category = new Category();
         category.id = data[key].id;
@@ -72,7 +71,7 @@ export class ManageBudgetComponent implements OnInit {
   }
 
   getTotalBudget() {
-    this.budgetService.getTotalBudget(this.currentUser).subscribe(value => {
+    this.budgetService.getTotalBudget(this.userId).subscribe(value => {
       this.totalBudget = value["amount"];
     })
   }
@@ -92,7 +91,7 @@ export class ManageBudgetComponent implements OnInit {
       budgetItem.owner = this.currentUser;
       budgetItem.category = this.budgetCategory;
       budgetItem.amount = this.budgetAmount;
-      this.budgetService.addBudget(budgetItem).subscribe(resp => {
+      this.budgetService.addBudget(this.userId, budgetItem).subscribe(resp => {
         console.log(resp);
         this.dialog.closeAll();
       })
@@ -103,7 +102,7 @@ export class ManageBudgetComponent implements OnInit {
   }
 
   deleteBudgetItem(budgetItem) {
-    this.budgetService.deleteBudget(budgetItem.id).subscribe(resp => {
+    this.budgetService.deleteBudget(this.userId, budgetItem.id).subscribe(resp => {
       this.getBudget();
       this.getTotalBudget();
     })
@@ -148,8 +147,7 @@ export class ManageBudgetComponent implements OnInit {
     }
     else {
       this.errorMessage = null;
-      console.log(this.budgetCategory)
-      this.budgetService.addCategory(this.currentUser, this.budgetCategory).subscribe(resp => {
+      this.budgetService.addCategory(this.userId, this.budgetCategory).subscribe(resp => {
         this.snackBar.open("Category added!", "OK", {"duration" : 2000});
         this.getCategories();
       })
@@ -159,7 +157,7 @@ export class ManageBudgetComponent implements OnInit {
 
   deleteCategory() {
     if (this.categoryToRemove != undefined) {
-      this.budgetService.deleteCategory(this.categoryToRemove.id).subscribe(resp => {
+      this.budgetService.deleteCategory(this.userId, this.categoryToRemove.id).subscribe(resp => {
         this.snackBar.open("Category removed.", "OK", {"duration" : 2000});
         this.getCategories();
         this.categoryToRemove = undefined;

@@ -10,18 +10,20 @@ def add_budget(budget: Transaction):
     db.execute_CUD(query, (budget.owner, budget.category, 0, budget.date, budget.amount,))
     return "Budget added."
 
-def delete_budget(budgetId):
-    query = "delete from budgets where id=%s"
-    db.execute_CUD(query, (budgetId,))
+def delete_budget(userId, budgetId):
+    user = user_dao.get_user_by_id(userId)
+    query = "delete from budgets where id=%s and owner=%s"
+    db.execute_CUD(query, (budgetId, user["username"],))
     return "Budget deleted."
 
 # Gets all budgets by month and year.
-def get_budget_history(username):
+def get_budget_history(userId):
+    user = user_dao.get_user_by_id(userId)
     query = """
         SELECT DISTINCT MONTH(startDate), YEAR(startDate) FROM budgets WHERE archived=1 AND owner=%s
         ORDER BY startDate DESC
         """
-    result = db.execute_query(query, (username,))
+    result = db.execute_query(query, (user["username"],))
     history = []
     for item in result:
         history.append({"month" : item["MONTH(startDate)"], "year": item["YEAR(startDate)"]})
@@ -29,7 +31,8 @@ def get_budget_history(username):
 
 # Gets all budget items and amount spent per category
 # for a selected month and year.
-def get_budget_archive(username, month, year):
+def get_budget_archive(userId, month, year):
+    user = user_dao.get_user_by_id(userId)
     archiveQuery = """
         select budgets.id as id, budgets.category,
         sum(case when transactions.owner = %s and MONTH(transactions.date) = %s and YEAR(transactions.date) = %s
@@ -46,8 +49,8 @@ def get_budget_archive(username, month, year):
 		AND owner = %s and month(transactions.date) = %s and year(transactions.date) = %s and category != 'Income' group by category
         """
 
-    archive = db.execute_query(archiveQuery, (username, month, year, username, month, year,))
-    notBudgeted = db.execute_query(nonBudgetItems, (username, month, year, username, username, month, year,))
+    archive = db.execute_query(archiveQuery, (user["username"], month, year, user["username"], month, year,))
+    notBudgeted = db.execute_query(nonBudgetItems, (user["username"], month, year, user["username"], user["username"], month, year,))
     for item in notBudgeted:
         archive.append(item)
     return archive
@@ -73,9 +76,10 @@ def get_remaining_balance(userId, month, year):
     result = db.execute_query(query, (user["username"], date, user["username"], date,))
     return result[0]["BALANCE"]
 
-def get_total_budget(username):
+def get_total_budget(userId):
+    user = user_dao.get_user_by_id(userId)
     query = "SELECT SUM(amount) AS amount from budgets where owner=%s and archived = 0"
-    result = db.execute_query(query, (username,))
+    result = db.execute_query(query, (user["username"],))
     return result[0]
 
 def get_budget_by_category(userId, year, month):
@@ -84,9 +88,10 @@ def get_budget_by_category(userId, year, month):
     result = db.execute_query(query, (user["username"], month, year,))
     return result
 
-def get_budget_categories(username):
+def get_budget_categories(userId):
+    user = user_dao.get_user_by_id(userId)
     query = "select * from budgetCategories where owner=%s order by title"
-    result = db.execute_query(query, (username,))
+    result = db.execute_query(query, (user["username"],))
     return result
 
 def get_active_budgets(username):
@@ -94,12 +99,14 @@ def get_active_budgets(username):
     result = db.execute_query(query, (username,))
     return result
 
-def add_category(username, title):
+def add_category(userId, title):
+    user = user_dao.get_user_by_id(userId)
     query = "insert into budgetCategories (owner, title) values (%s, %s)"
-    db.execute_CUD(query, (username, title))
+    db.execute_CUD(query, (user["username"], title))
     return "Category added."
 
-def delete_category(categoryId):
-    query = "delete from budgetCategories where id= %s"
-    db.execute_CUD(query, (categoryId,))
+def delete_category(userId, categoryId):
+    user = user_dao.get_user_by_id(userId)
+    query = "delete from budgetCategories where id= %s and owner=%s"
+    db.execute_CUD(query, (categoryId, user["username"],))
     return "Category deleted."

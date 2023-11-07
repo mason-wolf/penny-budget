@@ -16,61 +16,58 @@ def get_budget_by_category(id, year, month):
     return jsonify(budget_dao.get_budget_by_category(id, year, month))
 
 # Gets all budget categories.
-@budget_blueprint.route('/getBudgetCategories', methods=["POST"])
+@budget_blueprint.route('/budget/<id>/categories', methods=["GET"])
 @jwt_required()
-def get_budget_categories():
-    payload = request.data
-    payload = json.loads(payload)
-    username = payload["username"]
-    return jsonify(budget_dao.get_budget_categories(username))
+@requires_auth
+def get_budget_categories(id):
+    return jsonify(budget_dao.get_budget_categories(id))
 
 # Gets total amount budgeted for this month.
-@budget_blueprint.route('/getTotalBudget', methods=["POST"])
+@budget_blueprint.route('/budget/<id>/totals', methods=["GET"])
 @jwt_required()
-def get_total_budget():
-    payload = request.data
-    payload = json.loads(payload)
-    return jsonify(budget_dao.get_total_budget(payload["username"]))
+@requires_auth
+def get_total_budget(id):
+    return jsonify(budget_dao.get_total_budget(id))
 
 # Gets all budget history by month and year.
-@budget_blueprint.route('/getBudgetHistory', methods=["POST"])
+@budget_blueprint.route('/budget/<id>/history', methods=["GET"])
 @jwt_required()
-def get_budget_history():
-    payload = request.data
-    payload = json.loads(payload)
-    return jsonify(budget_dao.get_budget_history(payload["username"]))
+@requires_auth
+def get_budget_history(id):
+    return jsonify(budget_dao.get_budget_history(id))
 
 ## Gets all budget items and amount spent per category
 # for a selected month and year.
-@budget_blueprint.route('/getBudgetArchive', methods=['POST'])
+@budget_blueprint.route('/budget/<id>/archive/<year>/<month>', methods=['GET'])
 @jwt_required()
-def get_budget_archive():
-    payload = request.data
-    payload = json.loads(payload)
-    return jsonify (budget_dao.get_budget_archive(payload["username"], payload["month"], payload["year"]))
+@requires_auth
+def get_budget_archive(id, year, month):
+    return jsonify (budget_dao.get_budget_archive(id, month, year))
 
-@budget_blueprint.route('/addCategory', methods=["POST"])
+@budget_blueprint.route('/category/<id>', methods=["POST"])
 @jwt_required()
-def add_category():
+@requires_auth
+def add_category(id):
     payload = request.data
     payload = json.loads(payload)
-    username = payload["username"]
     title = payload["title"]
-    return jsonify(budget_dao.add_category(username, title))
+    return jsonify(budget_dao.add_category(id, title))
 
-@budget_blueprint.route('/deleteCategory', methods=["DELETE"])
+@budget_blueprint.route('/category/<id>', methods=["DELETE"])
 @jwt_required()
-def delete_category():
+@requires_auth
+def delete_category(id):
     payload = request.data
     payload = json.loads(payload)
-    return jsonify(budget_dao.delete_category(payload["categoryId"]))
+    return jsonify(budget_dao.delete_category(id, payload["categoryId"]))
 
 def get_active_budgets(username):
     return budget_dao.get_active_budgets(username)
 
-@budget_blueprint.route('/addBudget', methods=["POST"])
+@budget_blueprint.route('/budget/<id>', methods=["POST"])
 @jwt_required()
-def add_budget():
+@requires_auth
+def add_budget(id):
     payload = request.data
     payload = json.loads(payload)
     today = date.today()
@@ -82,9 +79,10 @@ def add_budget():
     budget_dao.add_budget(transaction)
     return jsonify("Budget added.")
 
-@budget_blueprint.route('/deleteBudget', methods=["DELETE"])
+@budget_blueprint.route('/budget/<id>', methods=["DELETE"])
 @jwt_required()
-def delete_budget():
+@requires_auth
+def delete_budget(id):
     payload = request.data
     payload = json.loads(payload)
-    return jsonify(budget_dao.delete_budget(payload["budgetId"]))
+    return jsonify(budget_dao.delete_budget(id, payload["budgetId"]))

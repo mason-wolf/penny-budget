@@ -12,39 +12,39 @@ export class BudgetService {
 
   constructor(private httpClient: HttpClient) { }
 
-  addBudget(budgetItem: Transaction) {
-    return this.httpClient.post(environment.apiEndpoint + '/addBudget', {budgetItem})
+  addBudget(userId: string, budgetItem: Transaction) {
+    return this.httpClient.post(environment.apiEndpoint + '/budget/' + userId, {budgetItem})
   }
 
   getBudgetByCategory(userId: string, month: number, year: number) {
     return this.httpClient.get(environment.apiEndpoint + '/budget/' + userId + "/" + year + "/" + month);
   }
 
-  getBudgetHistory(username: string) {
-    return this.httpClient.post(environment.apiEndpoint + '/getBudgetHistory', { "username": username });
+  getBudgetHistory(userId) {
+    return this.httpClient.get(environment.apiEndpoint + '/budget/' + userId + "/history");
   }
 
   getRemainingBalance(username: string, month: number, year: number) {
     return this.httpClient.get(environment.apiEndpoint + '/account/' + username + "/balance/" + year + "/" + month);
   }
 
-  getBudgetArchive(username: string, month: number, year: number) {
-    return this.httpClient.post(environment.apiEndpoint + '/getBudgetArchive', { "username" : username, "month" : month, "year" : year });
+  getBudgetArchive(userId: string, month: number, year: number) {
+    return this.httpClient.get(environment.apiEndpoint + '/budget/' + userId + "/archive/" + year + "/" + month);
   }
 
-  getBudgetCategories(username: string) {
-    return this.httpClient.post(environment.apiEndpoint + "/getBudgetCategories", { "username" : username })
+  getBudgetCategories(userId: string) {
+    return this.httpClient.get(environment.apiEndpoint + '/budget/' + userId + "/categories");
   }
 
-  getTotalBudget(username: string) {
-    return this.httpClient.post(environment.apiEndpoint + "/getTotalBudget", { "username" : username })
+  getTotalBudget(userId: string) {
+    return this.httpClient.get(environment.apiEndpoint + '/budget/' + userId + "/totals");
   }
 
-  addCategory(username: string, title: string) {
-    return this.httpClient.post(environment.apiEndpoint + "/addCategory", { "username": username, "title": title })
+  addCategory(userId: string, title: string) {
+    return this.httpClient.post(environment.apiEndpoint + "/category/" + userId, { "title": title })
   }
 
-  deleteCategory(categoryId: number) {
+  deleteCategory(userId: string, categoryId: number) {
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -53,10 +53,10 @@ export class BudgetService {
         categoryId: categoryId
       }
     }
-    return this.httpClient.delete(environment.apiEndpoint + '/deleteCategory', options);
+    return this.httpClient.delete(environment.apiEndpoint + '/category/' + userId, options);
   }
 
-  deleteBudget(budgetId: number) {
+  deleteBudget(userId: string, budgetId: number) {
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -65,6 +65,6 @@ export class BudgetService {
         budgetId: budgetId
       }
     }
-    return this.httpClient.delete(environment.apiEndpoint + '/deleteBudget', options);
+    return this.httpClient.delete(environment.apiEndpoint + '/budget/' + userId, options);
   }
 }

@@ -39,7 +39,7 @@ export class BudgetHistoryComponent implements OnInit {
 
   getBudgetArchive() {
     this.budgetArchive = [];
-    this.budgetService.getBudgetArchive(this.currentUser, this.month, this.year).subscribe(value => {
+    this.budgetService.getBudgetArchive(this.userId, this.month, this.year).subscribe(value => {
       Object.keys(value).forEach((key) => {
         this.budgetArchive.push(value[key]);
         this.totalBudget += value[key].budgetAmount;

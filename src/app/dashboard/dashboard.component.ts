@@ -190,7 +190,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getBudgetHistory() {
-    this.budgetService.getBudgetHistory(this.currentUser).subscribe(data => {
+    this.budgetService.getBudgetHistory(this.userId).subscribe(data => {
       Object.keys(data).forEach((key) => {
         let date = new Date(data[key].year, data[key].month, 0, 1);
         this.budgetHistory.push(date);
@@ -200,7 +200,7 @@ export class DashboardComponent implements OnInit {
 
   getCategories() {
     this.categories = [];
-    this.budgetService.getBudgetCategories(this.currentUser).subscribe(data => {
+    this.budgetService.getBudgetCategories(this.userId).subscribe(data => {
       Object.keys(data).forEach((key) => {
         let category = new Category();
         category.id = data[key].id;
@@ -320,7 +320,7 @@ export class DashboardComponent implements OnInit {
     }
     else {
       this.errorMessage = null;
-      this.budgetService.addCategory(this.currentUser, this.categoryName).subscribe(resp => {
+      this.budgetService.addCategory(this.userId, this.categoryName).subscribe(resp => {
         this.snackBar.open("Category added!", "OK", {"duration" : 2000});
         this.getCategories();
       })
@@ -330,7 +330,7 @@ export class DashboardComponent implements OnInit {
 
   deleteCategory() {
     if (this.categoryToRemove != undefined) {
-      this.budgetService.deleteCategory(this.categoryToRemove.id).subscribe(resp => {
+      this.budgetService.deleteCategory(this.userId, this.categoryToRemove.id).subscribe(resp => {
         this.snackBar.open("Category removed.", "OK", {"duration" : 2000});
         this.getCategories();
         this.categoryToRemove = undefined;
