@@ -30,12 +30,18 @@ button {
 
 .budgetTable {
     width: 100%;
-    border: 1px solid #ccc;
 }
 
-.budgetTable th, td {
+.budgetTable th {
+  font-weight: 600;
+  font-size: 18px;
+  padding: 0.4em;
+  color: rgb(90, 90, 90);
+}
+
+.budgetTable td {
     padding: .4em;
-    border: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 h1 {

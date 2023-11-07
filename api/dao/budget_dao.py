@@ -5,23 +5,23 @@ from models.transaction import Transaction
 import db
 from dao import user_dao
 
-def addBudget(budget: Transaction):
+def add_budget(budget: Transaction):
     query = "insert into budgets (owner, category, archived, startDate, amount) values (%s, %s, %s, %s, %s)"
-    db.executeCUD(query, (budget.owner, budget.category, 0, budget.date, budget.amount,))
+    db.execute_CUD(query, (budget.owner, budget.category, 0, budget.date, budget.amount,))
     return "Budget added."
 
-def deleteBudget(budgetId):
+def delete_budget(budgetId):
     query = "delete from budgets where id=%s"
-    db.executeCUD(query, (budgetId,))
+    db.execute_CUD(query, (budgetId,))
     return "Budget deleted."
 
 # Gets all budgets by month and year.
-def getBudgetHistory(username):
+def get_budget_history(username):
     query = """
         SELECT DISTINCT MONTH(startDate), YEAR(startDate) FROM budgets WHERE archived=1 AND owner=%s
         ORDER BY startDate DESC
         """
-    result = db.executeQuery(query, (username,))
+    result = db.execute_query(query, (username,))
     history = []
     for item in result:
         history.append({"month" : item["MONTH(startDate)"], "year": item["YEAR(startDate)"]})
@@ -29,7 +29,7 @@ def getBudgetHistory(username):
 
 # Gets all budget items and amount spent per category
 # for a selected month and year.
-def getBudgetArchive(username, month, year):
+def get_budget_archive(username, month, year):
     archiveQuery = """
         select budgets.id as id, budgets.category,
         sum(case when transactions.owner = %s and MONTH(transactions.date) = %s and YEAR(transactions.date) = %s
@@ -46,13 +46,13 @@ def getBudgetArchive(username, month, year):
 		AND owner = %s and month(transactions.date) = %s and year(transactions.date) = %s and category != 'Income' group by category
         """
 
-    archive = db.executeQuery(archiveQuery, (username, month, year, username, month, year,))
-    notBudgeted = db.executeQuery(nonBudgetItems, (username, month, year, username, username, month, year,))
+    archive = db.execute_query(archiveQuery, (username, month, year, username, month, year,))
+    notBudgeted = db.execute_query(nonBudgetItems, (username, month, year, username, username, month, year,))
     for item in notBudgeted:
         archive.append(item)
     return archive
 
-def getRemainingBalance(userId, month, year):
+def get_remaining_balance(userId, month, year):
     month = int(month)
     year = int(year)
     query = """
@@ -68,38 +68,38 @@ def getRemainingBalance(userId, month, year):
         year = year + 1
     else:
         month = month + 1
-    user = user_dao.getUserbyId(userId)
+    user = user_dao.get_user_by_id(userId)
     date = datetime.datetime(year, month, 1).date()
-    result = db.executeQuery(query, (user["username"], date, user["username"], date,))
+    result = db.execute_query(query, (user["username"], date, user["username"], date,))
     return result[0]["BALANCE"]
 
-def getTotalBudget(username):
+def get_total_budget(username):
     query = "SELECT SUM(amount) AS amount from budgets where owner=%s and archived = 0"
-    result = db.executeQuery(query, (username,))
+    result = db.execute_query(query, (username,))
     return result[0]
 
-def getBudgetByCategory(userId, year, month):
-    user = user_dao.getUserbyId(userId)
+def get_budget_by_category(userId, year, month):
+    user = user_dao.get_user_by_id(userId)
     query = "select * from budgets where owner = %s and archived = 0 and MONTH(startDate) = %s and YEAR(startDate) = %s order by amount desc"
-    result = db.executeQuery(query, (user["username"], month, year,))
+    result = db.execute_query(query, (user["username"], month, year,))
     return result
 
-def getBudgetCategories(username):
+def get_budget_categories(username):
     query = "select * from budgetCategories where owner=%s order by title"
-    result = db.executeQuery(query, (username,))
+    result = db.execute_query(query, (username,))
     return result
 
-def getActiveBudgets(username):
+def get_active_budgets(username):
     query = "select * from budgets where owner=%s and archived = 0"
-    result = db.executeQuery(query, (username,))
+    result = db.execute_query(query, (username,))
     return result
 
-def addCategory(username, title):
+def add_category(username, title):
     query = "insert into budgetCategories (owner, title) values (%s, %s)"
-    db.executeCUD(query, (username, title))
+    db.execute_CUD(query, (username, title))
     return "Category added."
 
-def deleteCategory(categoryId):
+def delete_category(categoryId):
     query = "delete from budgetCategories where id= %s"
-    db.executeCUD(query, (categoryId,))
+    db.execute_CUD(query, (categoryId,))
     return "Category deleted."

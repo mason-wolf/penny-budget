@@ -1,27 +1,27 @@
 import db
 
-def addUser(username, password):
+def add_user(username, password):
     query = "insert into users (username, password, enabled, user_token) values (%s, %s, %s, %s)"
-    db.executeCUD(query, (username, password, 1, None,))
+    db.execute_CUD(query, (username, password, 1, None,))
     return {"status" : "success", "message" : "Created user."}
 
-def getUser(username):
+def get_user(username):
     query = "SELECT * FROM users where username=%s"
-    result = db.executeQuery(query, (username,))
+    result = db.execute_query(query, (username,))
     if (len(result) > 0):
         return result[0]
     else:
         return {"error" : "User not found."}
 
-def getUserbyId(userId):
+def get_user_by_id(userId):
     query = "SELECT * FROM users where id=%s"
-    result = db.executeQuery(query, (userId,))
+    result = db.execute_query(query, (userId,))
     if (len(result) > 0):
         return result[0]
     else:
         return {"error" : "User not found."}
-    
-def resetPassword(username, password):
+
+def reset_password(username, password):
     query = "update users set password=%s where username=%s"
-    result = db.executeCUD(query, ((password, username,)))
+    result = db.execute_CUD(query, ((password, username,)))
     return result

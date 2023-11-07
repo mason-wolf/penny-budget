@@ -1,6 +1,6 @@
 import mysql.connector
 
-def getConnection():
+def get_connection():
     db = mysql.connector.connect(
         host = "localhost",
         #host = "host.docker.internal",
@@ -10,9 +10,9 @@ def getConnection():
     )
     return db
 
-def executeQuery(query, params):
+def execute_query(query, params):
     try:
-      conn = getConnection()
+      conn = get_connection()
       cursor = conn.cursor()
       cursor.execute(query, params)
       columns = cursor.description
@@ -29,8 +29,8 @@ def executeQuery(query, params):
         print(e)
         return []
 
-def executeCUD(query, params):
-    conn = getConnection()
+def execute_CUD(query, params):
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(query, (params))
     conn.commit()

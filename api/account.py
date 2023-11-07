@@ -11,95 +11,95 @@ account_blueprint = Blueprint('account', __name__,)
 
 @account_blueprint.route('/account/<id>', methods=['GET'])
 @jwt_required()
-def getAccount(id):
+def get_account(id):
     user_id = get_jwt_identity()
     if int(id) != int(user_id):
         return jsonify({401 : "Unauthorized."})
     else:
-        return jsonify(account_dao.getAccount(id))
+        return jsonify(account_dao.get_account(id))
 
 @account_blueprint.route('/account/<id>/income/<year>/<month>', methods=['GET'])
 @jwt_required()
-def getAmountEarned(id, year, month):
+def get_amount_earned(id, year, month):
     user_id = get_jwt_identity()
     if int(id) != int(user_id):
         return jsonify({401 : "Unauthorized."})
     else:
-        return jsonify(account_dao.getAmountEarned(id, month, year))
+        return jsonify(account_dao.get_amount_earned(id, month, year))
 
 @account_blueprint.route('/account/<id>/balance/<year>/<month>', methods=['GET'])
 @jwt_required()
-def getRemainingBalance(id, year, month):
+def get_remaining_balance(id, year, month):
     user_id = get_jwt_identity()
     if int(id) != int(user_id):
         return jsonify({401 : "Unauthorized."})
     else:
-        return jsonify(budget_dao.getRemainingBalance(id, month, year))
+        return jsonify(budget_dao.get_remaining_balance(id, month, year))
 
 @account_blueprint.route('/account/<id>/summary/<year>/<month>', methods=['GET'])
 @jwt_required()
-def getTotalSpentByCategory(id, year, month):
+def get_total_spent_by_category(id, year, month):
     user_id = get_jwt_identity()
     if int(id) != int(user_id):
         return jsonify({401: "Unauthorized."})
     else:
-        return jsonify(account_dao.getTotalSpentByCategory(id, month, year))
+        return jsonify(account_dao.get_total_spent_by_category(id, month, year))
 
 @account_blueprint.route('/account/<id>/transactions/', methods=['GET'])
 @jwt_required()
-def getTransactionHistory(id):
+def get_transaction_history(id):
     user_id = get_jwt_identity()
     if int(id) != int(user_id):
         return jsonify({401 : "Unauthorized."})
     else:
-        return jsonify(account_dao.getTransactionHistory(id))
+        return jsonify(account_dao.get_transaction_history(id))
 
 @account_blueprint.route('/account/<id>/transaction/', methods=['POST'])
 @jwt_required()
-def addTransaction(id):
+def add_transaction(id):
     user_id = get_jwt_identity()
     if int(id) != int(user_id):
         return jsonify({401: "Unauthorized."})
     else:
       payload = request.data
       payload = json.loads(payload)
-      transaction = JSONToTransaction(payload)
-      return jsonify(account_dao.addTransaction(transaction))
+      transaction = JSON_to_transaction(payload)
+      return jsonify(account_dao.add_transaction(transaction))
 
 @account_blueprint.route('/account/<id>/transaction/', methods=['DELETE'])
 @jwt_required()
-def deleteTransaction(id):
+def delete_transaction(id):
     user_id = get_jwt_identity()
     if int(id) != int(user_id):
         return jsonify({401: "Unauthorized."})
     else:
       payload = request.data
       payload = json.loads(payload)
-      transaction = JSONToTransaction(payload)
-      return jsonify(account_dao.deleteTransaction(transaction))
+      transaction = JSON_to_transaction(payload)
+      return jsonify(account_dao.delete_transaction(transaction))
 
 @account_blueprint.route('/account/<id>/archive/', methods=["POST"])
 @jwt_required()
-def archiveAccount(id):
+def archive_account(id):
     user_id = get_jwt_identity()
     if int(id) != int(user_id):
         return jsonify({401: "Unauthorized."})
     else:
         payload = request.data
         payload = json.loads(payload)
-        activeBudgets = budget_dao.getActiveBudgets(payload["username"])
+        activeBudgets = budget_dao.get_active_budgets(payload["username"])
         today = date.today()
-        account_dao.archiveAccount(payload["username"], today.strftime("%Y-%m-%d"))
+        account_dao.archive_account(payload["username"], today.strftime("%Y-%m-%d"))
         for budgetItem in activeBudgets:
             transaction = Transaction()
             transaction.owner = budgetItem["owner"]
             transaction.category = budgetItem["category"]
             transaction.date = today.strftime("%Y-%m-%d")
             transaction.amount = budgetItem["amount"]
-            budget_dao.addBudget(transaction)
+            budget_dao.add_budget(transaction)
         return jsonify("Account archived.")
 
-def JSONToTransaction(json):
+def JSON_to_transaction(json):
     transaction = Transaction()
     transaction.id = json['transaction']['id']
     transaction.owner = json['transaction']["owner"]
