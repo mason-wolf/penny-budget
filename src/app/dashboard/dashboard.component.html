@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="row justify-content-center" style="margin-top:-25px;">
+    <div class="row justify-content-center" style="margin-top:-25px;margin-left:45px;">
         <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
             <h1>Income</h1>
             <h2>{{ amountEarned }}</h2>
@@ -16,24 +16,24 @@
             <a href="manage-budget">Manage Budget</a>
         </div>
 
-        <div class="col-md-10 order-1 order-md-1 mr-1 budgetProgress style" style="margin-top:-25px;">
-            <h1> {{ date | date: 'MMMM YYYY' }} Budget</h1>
+        <div class="col-md-12 order-1 order-md-1 mr-1 budgetProgress style" style="margin-top:-25px;">
+            <h1> {{ date | date: 'MMMM' }} Budget</h1>
             <div class="d-flex justify-content-between" style="margin-top: -50px;margin-bottom:25px;">
                     <button class="ml-auto" (click)="showTransactionDialog()">Add Transaction</button>
             </div>
             <div *ngFor="let budget of budgetItems">
                 <div *ngFor="let transaction of transactions">
                     <div *ngIf="budget.category == transaction.category" class="budgetContainer">
-                        <div class="col-12" style="padding:0">
-                            {{budget.category}}
-                            <span style="float:right;font-size:18px;" class="money">{{ transaction.amount | currency }} of {{ budget.amount | currency}}</span>
+                        <div class="col-12" style="padding:0;margin-bottom:-8px;">
+                            <span class="budget-category">{{budget.category}}</span>
+                            <span style="float:right;" class="money">{{ transaction.amount | currency }} of {{ budget.amount | currency}}</span>
                         </div>
                         <div class="budgetItem">
-                            <div *ngIf="transaction.amount <= (budget.amount / 2)" class="budgetStatus" 
+                            <div *ngIf="transaction.amount <= (budget.amount / 2)" class="budgetStatus"
                             style="background-color: rgb(85, 194, 91);" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
-                            <div *ngIf="transaction.amount >= (budget.amount * 0.60) && transaction.amount <= (budget.amount * 0.90)" class="budgetStatus" 
+                            <div *ngIf="transaction.amount >= (budget.amount * 0.60) && transaction.amount <= (budget.amount * 0.90)" class="budgetStatus"
                             style="background-color: rgb(85, 194, 91);" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
-                            <div *ngIf="transaction.amount >= (budget.amount * 0.90)" class="budgetStatus" 
+                            <div *ngIf="transaction.amount >= (budget.amount * 0.90)" class="budgetStatus"
                                 style="background-color: #f3aaa1;" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
                         </div>
                     </div>
