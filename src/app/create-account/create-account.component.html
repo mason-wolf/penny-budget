@@ -5,6 +5,7 @@
           <form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
               <input type="text" id="email" placeholder="Email" formControlName="email">
               <input type="password" id="password" placeholder="Password" formControlName="password">
+              <a [routerLink]="['/login']">Login</a>
               <button type="submit">Create Account</button>
           </form>
           <div *ngIf="errorMessage" style="color:red;">
