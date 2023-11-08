@@ -17,6 +17,7 @@ import { ManageBudgetComponent } from './manage-budget/manage-budget.component';
 import { BudgetHistoryComponent } from './budget-history/budget-history.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { CreateAccountComponent } from './create-account/create-account.component';
+import { CanvasJSChart } from 'src/assets/canvasjs-chart-3.7.26/canvasjs.angular.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { CreateAccountComponent } from './create-account/create-account.componen
     BudgetHistoryComponent,
     ResetPasswordComponent,
     CreateAccountComponent,
+    CanvasJSChart
   ],
   imports: [
     BrowserModule,

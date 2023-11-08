@@ -1,5 +1,5 @@
 import { formatCurrency, formatDate } from '@angular/common';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,6 +9,7 @@ import { BudgetService } from '../services/budget.service';
 import { Budget } from '../shared/models/budget.model';
 import { Category } from '../shared/models/category.model';
 import { Transaction } from '../shared/models/transaction.model';
+import { CanvasJSChart } from 'src/assets/canvasjs-chart-3.7.26/canvasjs.angular.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -52,6 +53,30 @@ export class DashboardComponent implements OnInit {
   @ViewChild('addIncomeDialog') addIncomeDialog: TemplateRef<any>;
   @ViewChild('addTransactionDialog') addTransactionDialog: TemplateRef<any>;
   @ViewChild('manageCategoryDialog') manageCategoryDialog: TemplateRef<any>;
+
+  chartOptions = {
+    title: {
+      text: '',
+    },
+    data: [
+      {
+        type: "doughnut",
+        startAngle: 60,
+        //innerRadius: 60,
+        indexLabelFontSize: 17,
+        indexLabel: "{label} - #percent%",
+        toolTipContent: "<b>{label}:</b> {y} (#percent%)",
+        dataPoints: [
+          { y: 67, label: "Inbox" },
+          { y: 28, label: "Archives" },
+          { y: 10, label: "Labels" },
+          { y: 7, label: "Drafts"},
+          { y: 15, label: "Trash"},
+          { y: 6, label: "Spam"}
+        ],
+      },
+    ],
+  };
 
   constructor(
     private budgetService: BudgetService,
@@ -119,6 +144,32 @@ export class DashboardComponent implements OnInit {
   getSpent() {
     this.transactions = [];
     this.accountService.getTotalSpentByCategory(this.userId, this.month, this.year).subscribe(data => {
+      let options = [];
+      for (var d in data) {
+        let amount = data[d]["amount"];
+        let category = data[d]["category"];
+        let chartItem = { y: amount, label: category};
+        options.push(chartItem);
+        console.log(this.chartOptions.data)
+        console.log(data[d])
+      }
+
+      this.chartOptions = {
+        title: {
+          text: '',
+        },
+        data: [
+          {
+            type: "doughnut",
+            startAngle: 60,
+            //innerRadius: 60,
+            indexLabelFontSize: 17,
+            indexLabel: "{label} - #percent%",
+            toolTipContent: "<b>{label}:</b> ${y} (#percent%)",
+            dataPoints: options
+          },
+        ],
+      }
       let totalSpent = 0;
       if (data == 0) {
         this.amountSpent = "$0.00";

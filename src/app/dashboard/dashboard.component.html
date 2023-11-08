@@ -1,155 +1,161 @@
 <div class="container-fluid">
-    <div class="row justify-content-center" style="margin-top:-25px;margin-left:45px;">
-        <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
-            <h1>Income</h1>
-            <h2>{{ amountEarned }}</h2>
-            <a [routerLink]="" (click)="showIncomeDialog()">Add Income</a>
-        </div>
-        <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
-            <h1>Balance</h1>
-            <h2>{{ balance }}</h2>
-            <a href="account-activity">View Activity</a>
-        </div>
-        <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
-            <h1>Spent</h1>
-            <h2>{{ amountSpent}}</h2>
-            <a href="manage-budget">Manage Budget</a>
-        </div>
+  <div class="row justify-content-center" style="margin-top:-25px;margin-left:45px;">
+    <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
+      <h1>Income</h1>
+      <h2>{{ amountEarned }}</h2>
+      <a [routerLink]="" (click)="showIncomeDialog()">Add Income</a>
+    </div>
+    <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
+      <h1>Balance</h1>
+      <h2>{{ balance }}</h2>
+      <a href="account-activity">View Activity</a>
+    </div>
+    <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
+      <h1>Spent</h1>
+      <h2>{{ amountSpent}}</h2>
+      <a href="manage-budget">Manage Budget</a>
+    </div>
 
-        <div class="col-md-12 order-1 order-md-1 mr-1 budgetProgress style" style="margin-top:-25px;">
-            <h1> {{ date | date: 'MMMM' }} Budget</h1>
-            <div class="d-flex justify-content-between" style="margin-top: -50px;margin-bottom:25px;">
-                    <button class="ml-auto" (click)="showTransactionDialog()">Add Transaction</button>
+    <div class="col-md-12 order-1 order-md-1 mr-1 budgetProgress style" style="margin-top:-25px;">
+      <h1> {{ date | date: 'MMMM' }} Budget</h1>
+      <div class="d-flex justify-content-between" style="margin-top: -50px;margin-bottom:25px;">
+        <button class="ml-auto" (click)="showTransactionDialog()">Add Transaction</button>
+      </div>
+      <div *ngFor="let budget of budgetItems">
+        <div *ngFor="let transaction of transactions">
+          <div *ngIf="budget.category == transaction.category" class="budgetContainer">
+            <div class="col-12" style="padding:0;margin-bottom:-8px;">
+              <span class="budget-category">{{budget.category}}</span>
+              <span style="float:right;" class="money">{{ transaction.amount | currency }} of {{ budget.amount |
+                currency}}</span>
             </div>
-            <div *ngFor="let budget of budgetItems">
-                <div *ngFor="let transaction of transactions">
-                    <div *ngIf="budget.category == transaction.category" class="budgetContainer">
-                        <div class="col-12" style="padding:0;margin-bottom:-8px;">
-                            <span class="budget-category">{{budget.category}}</span>
-                            <span style="float:right;" class="money">{{ transaction.amount | currency }} of {{ budget.amount | currency}}</span>
-                        </div>
-                        <div class="budgetItem">
-                            <div *ngIf="transaction.amount <= (budget.amount / 2)" class="budgetStatus"
-                            style="background-color: rgb(85, 194, 91);" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
-                            <div *ngIf="transaction.amount >= (budget.amount * 0.60) && transaction.amount <= (budget.amount * 0.90)" class="budgetStatus"
-                            style="background-color: rgb(85, 194, 91);" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
-                            <div *ngIf="transaction.amount >= (budget.amount * 0.90)" class="budgetStatus"
-                                style="background-color: #fcb3ab;" [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="budgetItem">
+              <div *ngIf="transaction.amount <= (budget.amount / 2)" class="budgetStatus"
+                style="background-color: rgb(85, 194, 91);"
+                [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
+              <div *ngIf="transaction.amount >= (budget.amount * 0.60) && transaction.amount <= (budget.amount * 0.90)"
+                class="budgetStatus" style="background-color: rgb(85, 194, 91);"
+                [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
+              <div *ngIf="transaction.amount >= (budget.amount * 0.90)" class="budgetStatus"
+                style="background-color: #fcb3ab;"
+                [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-    <div class="row" style="margin-top:-40px;margin-left:45px;">
-            <div class="col-md-6 mr-1 order-1 budgetProgress">
-                <h1>Budget History</h1>
-                <select [(ngModel)]="selectedArchive" name="selectedArcive">
-                    <option *ngFor="let budget of budgetHistory" [ngValue]="budget">{{ budget | date: 'MMMM YYYY' }}</option>
-                </select>
-                <button (click)="viewSelectedArchive()">View</button>
-            </div>
-            <div class="col-md-3 order-1">
-            </div>
+  </div>
+  <div class="row" style="margin-top:-60px;margin-left:35px;">
+    <div class="col-12 mr-1 order-1 budgetProgress justify-content-center">
+      <h1>Spending</h1>
+      <canvasjs-chart [options]="chartOptions" style="position:relative !important;margin-left:125px !important;"></canvasjs-chart>
     </div>
+    <div class="col-6 mr-1 order-1 budgetProgress" style="margin-top:-25px;">
+      <h1>Budget History</h1>
+      <select [(ngModel)]="selectedArchive" name="selectedArcive">
+        <option *ngFor="let budget of budgetHistory" [ngValue]="budget">{{ budget | date: 'MMMM YYYY' }}</option>
+      </select>
+      <button (click)="viewSelectedArchive()">View</button><br><br><br><br>
+    </div>
+  </div>
 </div>
 
 <!-- Add income dialog -->
 <ng-template #addIncomeDialog>
-    <mat-dialog-actions align="end">
-        <i class="fa fa-times" matDialogClose="yes" style="font-size:24px;margin-top:-35px;"></i>
-    </mat-dialog-actions>
-    <h1 style="padding:.5em .7em;margin-top:-70px;">Add Income</h1>
-    <div class="container-fluid" style="margin:0;">
-        <form [formGroup]="incomeForm">
-            <div class="col-12">
-                Amount:
-            </div>
-            <div class="col-12">
-                <input type="text" formControlName="incomeAmount">
-            </div>
-            <div class="col-12">
-                Date:
-            </div>
-            <div class="col-12">
-                <input type="date" formControlName="incomeDate">
-            </div>
-            <span style="color:red;width:100%;padding:1em;"> {{ errorMessage }} </span>
-            <div class="col-12 mt-2">
-                <button style="float:right;" (click)="addIncome()" matDialogClose="yes">Add</button>
-            </div>
-        </form>
-    </div>
-  </ng-template>
+  <mat-dialog-actions align="end">
+    <i class="fa fa-times" matDialogClose="yes" style="font-size:24px;margin-top:-35px;"></i>
+  </mat-dialog-actions>
+  <h1 style="padding:.5em .7em;margin-top:-70px;">Add Income</h1>
+  <div class="container-fluid" style="margin:0;">
+    <form [formGroup]="incomeForm">
+      <div class="col-12">
+        Amount:
+      </div>
+      <div class="col-12">
+        <input type="text" formControlName="incomeAmount">
+      </div>
+      <div class="col-12">
+        Date:
+      </div>
+      <div class="col-12">
+        <input type="date" formControlName="incomeDate">
+      </div>
+      <span style="color:red;width:100%;padding:1em;"> {{ errorMessage }} </span>
+      <div class="col-12 mt-2">
+        <button style="float:right;" (click)="addIncome()" matDialogClose="yes">Add</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
 
-  <!-- Add transaction dialog -->
+<!-- Add transaction dialog -->
 <ng-template #addTransactionDialog>
-    <mat-dialog-actions align="end">
-      <i class="fa fa-times" matDialogClose="yes" style="font-size:24px;margin-top:-35px;"></i>
-    </mat-dialog-actions>
-    <h1 style="padding:.5em .7em;margin-top:-70px;">Add Transaction</h1>
-    <div class="container-fluid justify-content-center" style="margin-top:15px;">
-        <form [formGroup]="transactionForm">
-            <div class="col-12">
-                Balance: <span style="float:right;">{{ balance || currency }}</span>
-            </div>
-            <div class="col-12 mt-3">
-                Amount:
-            </div>
-            <div class="col-12">
-                <input type="text" formControlName="transactionAmount">
-            </div>
-            <div class="col-12 mt-3">
-                Category:
-            </div>
-            <div class="col-12">
-                <select [(ngModel)]="transactionCategory" formControlName="transactionCategory">
-                    <option *ngFor="let category of categories" [ngValue]="category"> {{ category.title }} </option>
-                </select>
-                <a [routerLink]="" (click)="showCategoryDialog()">Manage Categories</a>
-            </div>
-            <div class="col-12 mt-3">
-                Date:
-            </div>
-            <div class="col-12">
-                <input type="date" formControlName="transactionDate">
-            </div>
-            <span style="color:red;width:100%;padding:1em;"> {{ errorMessage }} </span>
-            <div class="col-12 mt-2">
-                <button style="float:right;" (click)="addTransaction()">Add</button>
-                <button style="float:right;margin-right:15px;" matDialogClose="yes">Close</button>
-            </div>
-        </form>
-    </div>
-  </ng-template>
+  <mat-dialog-actions align="end">
+    <i class="fa fa-times" matDialogClose="yes" style="font-size:24px;margin-top:-35px;"></i>
+  </mat-dialog-actions>
+  <h1 style="padding:.5em .7em;margin-top:-70px;">Add Transaction</h1>
+  <div class="container-fluid justify-content-center" style="margin-top:15px;">
+    <form [formGroup]="transactionForm">
+      <div class="col-12">
+        Balance: <span style="float:right;">{{ balance || currency }}</span>
+      </div>
+      <div class="col-12 mt-3">
+        Amount:
+      </div>
+      <div class="col-12">
+        <input type="text" formControlName="transactionAmount">
+      </div>
+      <div class="col-12 mt-3">
+        Category:
+      </div>
+      <div class="col-12">
+        <select [(ngModel)]="transactionCategory" formControlName="transactionCategory">
+          <option *ngFor="let category of categories" [ngValue]="category"> {{ category.title }} </option>
+        </select>
+        <a [routerLink]="" (click)="showCategoryDialog()">Manage Categories</a>
+      </div>
+      <div class="col-12 mt-3">
+        Date:
+      </div>
+      <div class="col-12">
+        <input type="date" formControlName="transactionDate">
+      </div>
+      <span style="color:red;width:100%;padding:1em;"> {{ errorMessage }} </span>
+      <div class="col-12 mt-2">
+        <button style="float:right;" (click)="addTransaction()">Add</button>
+        <button style="float:right;margin-right:15px;" matDialogClose="yes">Close</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
 
 <!-- Manage Categories dialog -->
 <ng-template #manageCategoryDialog>
-    <mat-dialog-actions align="end">
-      <i class="fa fa-times" matDialogClose="yes" style="font-size:24px;margin-top:-35px;"></i>
-    </mat-dialog-actions>
-    <h1 style="padding:.5em .7em;margin-top:-70px;">Manage Categories</h1>
-    <div class="container-fluid justify-content-center" style="margin-top:-25px;">
-        <form>
-            <div class="col-12" style="margin-top:25px;">
-                Category Name:
-            </div>
-            <div class="col-12">
-                <input type="text" [(ngModel)]="categoryName" name="categoryName">
-                <span style="color:red;"> {{ errorMessage }} </span>
-                <button style="float:right;margin-top:5px;" (click)="addCategory()">Add</button>
-            </div>
-            <div class="col-12" style="margin-top:25px;">
-                Categories:
-            </div>
-            <div class="col-12">
-                <select name="categoryName" [(ngModel)]="categoryToRemove">
-                    <option *ngFor="let category of categories" [ngValue]="category" >{{ category.title }}</option>
-                </select>
-            </div>
-            <div class="col-12">
-                <button style="float:right;" (click)="deleteCategory()" style="margin-top:5px;">Remove</button>
-            </div>
-        </form>
-    </div>
-  </ng-template>
+  <mat-dialog-actions align="end">
+    <i class="fa fa-times" matDialogClose="yes" style="font-size:24px;margin-top:-35px;"></i>
+  </mat-dialog-actions>
+  <h1 style="padding:.5em .7em;margin-top:-70px;">Manage Categories</h1>
+  <div class="container-fluid justify-content-center" style="margin-top:-25px;">
+    <form>
+      <div class="col-12" style="margin-top:25px;">
+        Category Name:
+      </div>
+      <div class="col-12">
+        <input type="text" [(ngModel)]="categoryName" name="categoryName">
+        <span style="color:red;"> {{ errorMessage }} </span>
+        <button style="float:right;margin-top:5px;" (click)="addCategory()">Add</button>
+      </div>
+      <div class="col-12" style="margin-top:25px;">
+        Categories:
+      </div>
+      <div class="col-12">
+        <select name="categoryName" [(ngModel)]="categoryToRemove">
+          <option *ngFor="let category of categories" [ngValue]="category">{{ category.title }}</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button style="float:right;" (click)="deleteCategory()" style="margin-top:5px;">Remove</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

@@ -69,8 +69,14 @@
           "configurations": {
             "production": {
               "browserTarget": "penny-budget:build:production"
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true,
+              "vendorChunk": true
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

@@ -12,10 +12,14 @@ input, select {
     font-weight: 400;
     margin-top: 5px;
     margin-bottom: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #acacac;
     padding: .4em;
     outline: none;
 }
+
+canvas{
+  margin-left: -75px;
+  }
 
 button {
     float: right;
