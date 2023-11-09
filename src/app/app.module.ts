@@ -19,6 +19,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { CreateAccountComponent } from './create-account/create-account.component';
 import { CanvasJSChart } from 'src/assets/canvasjs-chart-3.7.26/canvasjs.angular.component';
 import { DatePipe } from '@angular/common';
+import { SpendingComponent } from './spending/spending.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { DatePipe } from '@angular/common';
     BudgetHistoryComponent,
     ResetPasswordComponent,
     CreateAccountComponent,
-    CanvasJSChart
+    CanvasJSChart,
+    SpendingComponent
   ],
   imports: [
     BrowserModule,

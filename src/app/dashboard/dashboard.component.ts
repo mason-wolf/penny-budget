@@ -48,50 +48,10 @@ export class DashboardComponent implements OnInit {
   categoryToRemove: Category;
   categories : Category[] = [];
 
-  budgetHistory : any[] = [];
-  selectedArchive : any;
-  selectedCategory: Category;
-  selectedTimeFrame: number;
 
   @ViewChild('addIncomeDialog') addIncomeDialog: TemplateRef<any>;
   @ViewChild('addTransactionDialog') addTransactionDialog: TemplateRef<any>;
   @ViewChild('manageCategoryDialog') manageCategoryDialog: TemplateRef<any>;
-
-  pieChart = {
-    title: {
-      text: '',
-    },
-    data: [
-      {
-        type: "doughnut",
-        startAngle: 60,
-        //innerRadius: 60,
-        indexLabelFontSize: 17,
-        indexLabel: "{label} - #percent%",
-        toolTipContent: "<b>{label}:</b> {y} (#percent%)",
-        dataPoints: [
-        ],
-      },
-    ],
-  };
-
-  barChart = {
-    animationEnabled: true,
-    theme: "light1", // "light1", "light2", "dark1", "dark2"
-    title:{
-      text: ""
-    },
-    axisY: {
-      title: ""
-    },
-    data: [{
-      type: "column",
-      showInLegend: true,
-      legendMarkerColor: "grey",
-      legendText: "",
-      dataPoints: []
-    }]
-  };
 
   constructor(
     private budgetService: BudgetService,
@@ -132,7 +92,6 @@ export class DashboardComponent implements OnInit {
     this.getBudget();
     this.getSpent();
     this.getCategories();
-    this.getBudgetHistory();
   }
 
   // Get account balance and account name.
@@ -161,30 +120,6 @@ export class DashboardComponent implements OnInit {
     this.transactions = [];
 
     this.accountService.getTotalSpentByCategory(this.userId, this.month, this.year).subscribe(data => {
-      let options = [];
-      for (var d in data) {
-        let amount = data[d]["amount"];
-        let category = data[d]["category"];
-        let chartItem = { y: amount, label: category};
-        options.push(chartItem);
-      }
-
-      this.pieChart = {
-        title: {
-          text: '',
-        },
-        data: [
-          {
-            type: "doughnut",
-            startAngle: 60,
-            //innerRadius: 60,
-            indexLabelFontSize: 17,
-            indexLabel: "{label} - #percent%",
-            toolTipContent: "<b>{label}:</b> ${y} (#percent%)",
-            dataPoints: options
-          },
-        ],
-      }
       let totalSpent = 0;
       if (data == 0) {
         this.amountSpent = "$0.00";
@@ -250,60 +185,6 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  viewSelectedArchive() {
-    if (this.selectedArchive != null) {
-      let date = new Date(this.selectedArchive);
-      let month = formatDate(date, 'MM', 'en-us');
-      let year = formatDate(date, 'YYYY', 'en-us');
-      this.router.navigate(['/budget-history/', month, year])
-    }
-  }
-
-  renderBarChart(data, legendText) {
-    this.barChart = {
-      animationEnabled: true,
-      theme: "light2",
-      title:{
-        text: ""
-      },
-      axisY: {
-        title: "$ Spent"
-      },
-      data: [{
-        type: "column",
-        showInLegend: true,
-        legendMarkerColor: "white",
-        legendText: legendText + " Spending",
-        dataPoints: data
-      }]
-    }
-  }
-
-  viewSpendingHistory() {
-    this.renderBarChart(null, null);
-    this.accountService.getMonthlySpendingByTimeframe(this.userId, this.selectedCategory.title, this.selectedTimeFrame).subscribe(resp => {
-      let options = [];
-      let category = "";
-      for (var d in resp) {
-        let amount = resp[d]["amount"];
-        let date = this.datePipe.transform(resp[d]["date"], 'MMMM')
-        category = resp[d]["category"];
-        let chartItem = { y: amount, label: date};
-        options.push(chartItem);
-      }
-      this.renderBarChart(options, this.selectedCategory.title);
-    });
-  }
-
-  getBudgetHistory() {
-    this.budgetService.getBudgetHistory(this.userId).subscribe(data => {
-      Object.keys(data).forEach((key) => {
-        let date = new Date(data[key].year, data[key].month, 0, 1);
-        this.budgetHistory.push(date);
-      })
-    })
-  }
-
   getCategories() {
     this.categories = [];
     this.budgetService.getBudgetCategories(this.userId).subscribe(data => {
@@ -314,9 +195,7 @@ export class DashboardComponent implements OnInit {
         category.title = data[key].title;
         this.categories.push(category);
       })
-      this.selectedCategory = this.categories[0];
     });
-    this.selectedTimeFrame = 3;
   }
 
   showIncomeDialog() {
