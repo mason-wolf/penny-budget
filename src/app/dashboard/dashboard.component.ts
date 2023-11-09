@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit {
   year: number;
   transactions: Transaction[] = [];
   budgetItems: Budget[] = [];
+  noBudget: boolean = false;
   errorMessage: string;
 
   // Income form fields
@@ -69,12 +70,6 @@ export class DashboardComponent implements OnInit {
         indexLabel: "{label} - #percent%",
         toolTipContent: "<b>{label}:</b> {y} (#percent%)",
         dataPoints: [
-          { y: 67, label: "Inbox" },
-          { y: 28, label: "Archives" },
-          { y: 10, label: "Labels" },
-          { y: 7, label: "Drafts"},
-          { y: 15, label: "Trash"},
-          { y: 6, label: "Spam"}
         ],
       },
     ],
@@ -248,6 +243,10 @@ export class DashboardComponent implements OnInit {
         budget.category = data[key].category;
         this.budgetItems.push(budget);
       })
+
+      if (this.budgetItems.length == 0) {
+        this.noBudget = true;
+      }
     })
   }
 

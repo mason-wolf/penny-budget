@@ -21,6 +21,10 @@
       <div class="d-flex justify-content-between" style="margin-top: -50px;margin-bottom:25px;">
         <button class="ml-auto" (click)="showTransactionDialog()">Add Transaction</button>
       </div>
+      <div *ngIf="noBudget" class="noBudget" style="text-align: center;">
+        You don't have a budget yet for {{ date | date: 'MMMM'}}!<br>
+        <a href="manage-budget">Create a budget</a> to get started.
+      </div>
       <div *ngFor="let budget of budgetItems">
         <div *ngFor="let transaction of transactions">
           <div *ngIf="budget.category == transaction.category" class="budgetContainer">
