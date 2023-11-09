@@ -46,6 +46,12 @@ def get_transaction_history(id):
 def get_monthly_income(id):
     return jsonify(account_dao.get_monthly_income(id))
 
+@account_blueprint.route("/account/<id>/spending-history/<category>/<interval>/", methods=['GET'])
+@jwt_required()
+@requires_auth
+def get_monthly_spending_by_timeframe(id, category, interval):
+    return jsonify(account_dao.get_monthly_spending_by_timeframe(id, interval, category))
+
 @account_blueprint.route('/account/<id>', methods=['PUT'])
 @jwt_required()
 @requires_auth

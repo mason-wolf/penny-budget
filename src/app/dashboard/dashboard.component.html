@@ -46,16 +46,32 @@
     </div>
   </div>
   <div class="row" style="margin-top:-60px;margin-left:35px;">
-    <div class="col-12 mr-1 order-1 budgetProgress justify-content-center">
+    <div class="col-12 mr-1 order-1 budgetProgress justify-content-center" *ngIf="pieChart.data[0].dataPoints.length > 0">
       <h1>Spending</h1>
-      <canvasjs-chart [options]="chartOptions" style="position:relative !important;margin-left:125px !important;"></canvasjs-chart>
+      <canvasjs-chart [options]="pieChart" style="position:relative !important;"></canvasjs-chart>
     </div>
-    <div class="col-6 mr-1 order-1 budgetProgress" style="margin-top:-25px;">
-      <h1>Budget History</h1>
+    <div class="col-md-5 order-1 budgetProgress">
+      <h1 style="margin-bottom:25px;">Budget History</h1>
       <select [(ngModel)]="selectedArchive" name="selectedArcive">
         <option *ngFor="let budget of budgetHistory" [ngValue]="budget">{{ budget | date: 'MMMM YYYY' }}</option>
       </select>
       <button (click)="viewSelectedArchive()">View</button><br><br><br><br>
+    </div>
+    <!-- Spending History -->
+    <div class="col-md-6 order-1 budgetProgress">
+      <h1>Spending History</h1>
+      <select [(ngModel)]="selectedCategory" name="selectedCategory">
+        <option *ngFor="let category of categories" [ngValue]="category">{{ category.title }}</option>
+      </select>
+      <select [(ngModel)]="selectedTimeFrame" name="selectedTimeFrame">
+        <option value="3">3 Months</option>
+        <option value="6">6 Months</option>
+        <option value="12">1 Year</option>
+      </select>
+      <button (click)="viewSpendingHistory()">View</button>
+    </div>
+    <div class="col-12 mr-1 order-1 budgetProgress" style="padding: 0em !important;margin-top:-45px;margin-bottom: 25px;">
+      <canvasjs-chart *ngIf="barChart.data[0].dataPoints.length > 0" [options]="barChart" style="position:relative !important;margin-left:125px !important;width:100%;"></canvasjs-chart>
     </div>
   </div>
 </div>

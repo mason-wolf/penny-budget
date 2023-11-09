@@ -19,6 +19,7 @@ input, select {
 
 canvas{
   margin-left: -75px;
+  padding-left: 2em;
   }
 
 button {

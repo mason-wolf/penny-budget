@@ -5,13 +5,13 @@
     text-align: center;
 }
 
-.budgetContainer {
-
-}
-
 .budgetProgress {
     margin-top: 5px;
     padding: 2em;
+}
+
+.border {
+  border:1px solid #ccc;
 }
 
 h2 {

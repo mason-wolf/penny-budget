@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Transaction } from '../shared/models/transaction.model';
+import { Category } from '../shared/models/category.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,11 @@ export class AccountService {
 
   getMonthlyIncome(userId: string) {
     return this.httpClient.get(environment.apiEndpoint + '/account/' + userId + "/income/");
+  }
+
+  getMonthlySpendingByTimeframe(userId: string, category: string, interval: Number) {
+    return this.httpClient.get(environment.apiEndpoint + "/account/" + userId + "/spending-history/" +
+    category + "/" + interval + "/")
   }
 
   updateMonthlyIncome(userId: string, amount: number) {

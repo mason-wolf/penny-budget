@@ -18,6 +18,7 @@ import { BudgetHistoryComponent } from './budget-history/budget-history.componen
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { CreateAccountComponent } from './create-account/create-account.component';
 import { CanvasJSChart } from 'src/assets/canvasjs-chart-3.7.26/canvasjs.angular.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { CanvasJSChart } from 'src/assets/canvasjs-chart-3.7.26/canvasjs.angular
     FormsModule
   ],
   providers: [
+    DatePipe,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

@@ -97,6 +97,21 @@ def get_transaction_history(id):
     result = db.execute_query(query, (user["username"],))
     return result
 
+def get_monthly_spending_by_timeframe(id, interval, category):
+    """
+    Retrieves monthly spending by category and timeframe.\n
+    :param: interval - 3, 6, 12 months, etc.
+    :param: category - Spending category
+    """
+    user = user_dao.get_user_by_id(id)
+    query = "select sum(amount) as amount, category, date from transactions " \
+            "where date >= last_day(now()) + " \
+            "interval 1 day - interval %s month " \
+            "and category =%s and owner=%s \
+             group by category, month(date)"
+    result = db.execute_query(query, (interval, category, user["username"],))
+    return result
+
 def add_transaction(transaction: Transaction):
     query = "insert into transactions (owner, date, amount, category, archived) values (%s, %s, %s, %s, %s)"
     # Add to account balance if the transaction is a source of income.
