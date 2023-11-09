@@ -3,15 +3,26 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor,
+  HttpErrorResponse
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import {catchError} from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
+
+  private handleAuthError(err: HttpErrorResponse): Observable<any> {
+    if (err.status === 401) {
+        this.router.navigateByUrl(`/login`);
+        return of(err.message);
+    }
+    return throwError(err);
+}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const authToken = this.authService.getToken();
@@ -20,7 +31,8 @@ export class AuthInterceptor implements HttpInterceptor {
         Authorization: `Bearer ${authToken}`
       }
     });
-    
-    return next.handle(request);
+
+    return next.handle(request).pipe(catchError(x=> this.handleAuthError(x)));
+
   }
 }

@@ -44,7 +44,7 @@
                 style="background-color: rgb(117, 182, 119);"
                 [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
               <div *ngIf="transaction.amount >= (budget.amount * 0.75) && transaction.amount < budget.amount"
-                class="budgetStatus" style="background-color: rgb(243, 233, 85);"
+                class="budgetStatus" style="background-color: rgb(224, 220, 159);"
                 [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
               <div *ngIf="transaction.amount > (budget.amount)" class="budgetStatus"
                 style="background-color: #fcb3ab;"

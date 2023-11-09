@@ -9,7 +9,7 @@ import { BudgetService } from '../services/budget.service';
 import { Budget } from '../shared/models/budget.model';
 import { Category } from '../shared/models/category.model';
 import { Transaction } from '../shared/models/transaction.model';
-import { CanvasJSChart } from 'src/assets/canvasjs-chart-3.7.26/canvasjs.angular.component';
+
 
 @Component({
   selector: 'app-dashboard',
