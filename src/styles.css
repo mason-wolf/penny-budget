@@ -26,12 +26,14 @@ button {
     float: right;
     font-size: 14px;
     color: white;
-    background-color: green;
-    border: 1px solid green;
+    background-color: rgb(25, 133, 25);
+    border: 1px solid rgb(25, 133, 25);
     font-family: 'Urbanist', sans-serif;
     font-weight: 400;
-    padding: .2em .6em;
+    padding: .4em .8em;
     letter-spacing: 1px;
+    border-radius: 18px;
+    box-shadow: 0 0 1px 1px rgb(25, 133, 25);
 }
 
 .budgetTable {

@@ -20,7 +20,7 @@ export class BudgetHistoryComponent implements OnInit {
   income: number;
   totalBudget = 0;
   totalSpent = 0;
-
+  noBudget: boolean = false;
   remainingBalance: number;
 
   constructor(private budgetService: BudgetService, private router: ActivatedRoute, private accountService: AccountService) {
@@ -45,7 +45,11 @@ export class BudgetHistoryComponent implements OnInit {
         this.totalBudget += value[key].budgetAmount;
         this.totalSpent += value[key].budgetSpent;
       })
-    })
+    });
+
+    if (this.budgetArchive.length == 0) {
+      this.noBudget = true;
+    }
   }
 
   getIncome() {

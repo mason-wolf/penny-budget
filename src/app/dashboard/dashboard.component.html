@@ -1,24 +1,30 @@
 <div class="container-fluid">
   <div class="row justify-content-center" style="margin-top:-25px;margin-left:45px;">
-    <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
-      <h1>Income</h1>
-      <h2>{{ amountEarned }}</h2>
-      <a [routerLink]="" (click)="showIncomeDialog()">Add Income</a>
-    </div>
-    <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
-      <h1>Balance</h1>
-      <h2>{{ balance }}</h2>
-      <a href="account-activity">View Activity</a>
-    </div>
-    <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
-      <h1>Spent</h1>
-      <h2>{{ amountSpent}}</h2>
-      <a href="manage-budget">Manage Budget</a>
-    </div>
+    <ng-container *ngIf="budgetItems.length > 0 && !noBudget || noBudget">
+      <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
+        <h1>Income</h1>
+        <h2>{{ amountEarned }}</h2>
+        <a [routerLink]="" (click)="showIncomeDialog()">Add Income</a>
+      </div>
+      <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
+        <h1>Balance</h1>
+        <h2>{{ balance }}</h2>
+        <a href="account-activity">View Activity</a>
+      </div>
+      <div class="col-md-3 order-1 order-md-1 mr-1 balanceInfo">
+        <h1>Spent</h1>
+        <h2>{{ amountSpent}}</h2>
+        <a href="manage-budget">Manage Budget</a>
+      </div>
+    </ng-container>
 
-    <div class="col-md-12 order-1 order-md-1 mr-1 budgetProgress style" style="margin-top:-25px;">
+
+    <div class="col-md-12 order-1 order-md-1" *ngIf="budgetItems.length == 0 && !noBudget" style="text-align: center;margin-top:100px;">
+      <img src="assets/loading.gif">
+    </div>
+    <div class="col-md-12 order-1 order-md-1 mr-1 budgetProgress style" style="margin-top:-25px;" *ngIf="budgetItems.length > 0 || noBudget">
       <h1> {{ date | date: 'MMMM' }} Budget</h1>
-      <div class="d-flex justify-content-between" style="margin-top: -50px;margin-bottom:25px;">
+      <div class="d-flex justify-content-between" style="margin-top: -50px;margin-bottom:25px;" *ngIf="!noBudget">
         <button class="ml-auto" (click)="showTransactionDialog()">Add Transaction</button>
       </div>
       <div *ngIf="noBudget" class="noBudget" style="text-align: center;">
@@ -34,22 +40,23 @@
                 currency}}</span>
             </div>
             <div class="budgetItem">
-              <div *ngIf="transaction.amount <= (budget.amount / 2)" class="budgetStatus"
-                style="background-color: rgb(85, 194, 91);"
+              <div *ngIf="transaction.amount <= (budget.amount / 2) || transaction.amount == budget.amount" class="budgetStatus"
+                style="background-color: rgb(117, 182, 119);"
                 [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
-              <div *ngIf="transaction.amount >= (budget.amount * 0.60) && transaction.amount <= (budget.amount * 0.90)"
-                class="budgetStatus" style="background-color: rgb(85, 194, 91);"
+              <div *ngIf="transaction.amount >= (budget.amount * 0.75) && transaction.amount < budget.amount"
+                class="budgetStatus" style="background-color: rgb(243, 233, 85);"
                 [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
-              <div *ngIf="transaction.amount >= (budget.amount * 0.90)" class="budgetStatus"
+              <div *ngIf="transaction.amount > (budget.amount)" class="budgetStatus"
                 style="background-color: #fcb3ab;"
-                [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
+                [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="row" style="margin-top:-60px;margin-left:35px;">
+  <div class="row" style="margin-top:-60px;margin-left:35px;" *ngIf="budgetItems.length > 0">
     <div class="col-12 mr-1 order-1 budgetProgress justify-content-center" *ngIf="pieChart.data[0].dataPoints.length > 0">
       <h1>Spending</h1>
       <canvasjs-chart [options]="pieChart" style="position:relative !important;"></canvasjs-chart>

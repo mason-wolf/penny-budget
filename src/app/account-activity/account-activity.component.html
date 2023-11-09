@@ -8,7 +8,13 @@
                 </ol>
               </nav>
             <h1>Account Activity</h1>
-            <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 m-1 activity" style="width:100%;">
+            <div class="col-md-12 order-1 order-md-1" *ngIf="transactions.length == 0 && !noTransactions" style="text-align: center;margin-top:100px;">
+              <img src="assets/loading.gif">
+            </div>
+            <div *ngIf="noTransactions">
+              No recent activity.
+            </div>
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 m-1 activity" style="width:100%;" *ngIf="transactions.length > 0 && !noTransactions">
                 <ng-container matColumnDef="date">
                     <th mat-header-cell *matHeaderCellDef>Date</th>
                     <td mat-cell *matCellDef="let transaction"> {{ transaction.date }} </td>

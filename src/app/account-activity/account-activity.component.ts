@@ -18,6 +18,7 @@ export class AccountActivityComponent implements OnInit {
   dataSource = new MatTableDataSource();
   displayedColumns : string[] = ["date", "category", "amount", "deleteAction"]
   transactions : Transaction[] = []
+  noTransactions: boolean = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('addIncomeDialog') addIncomeDialog: TemplateRef<any>;
@@ -33,6 +34,9 @@ export class AccountActivityComponent implements OnInit {
         this.transactions.push(data[key])
       })
 
+      if (this.transactions.length == 0) {
+        this.noTransactions = true;
+      }
       this.dataSource.data = this.transactions;
       this.dataSource.paginator = this.paginator;
     })

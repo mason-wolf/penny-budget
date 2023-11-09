@@ -9,6 +9,11 @@
               </nav>
             <h1>Manage Budget</h1>
             <button (click)="showBudgetDialog()">Add Budget</button>
+
+            <div class="col-md-12 order-1 order-md-1" *ngIf="budgetItems.length == 0 && !noBudget" style="text-align: center;margin-top:100px;">
+              <img src="assets/loading.gif">
+            </div>
+
             <table class="budgetTable" style="margin-top:50px;">
               <th>Category</th>
               <th style="border-right:none;">Projected</th>

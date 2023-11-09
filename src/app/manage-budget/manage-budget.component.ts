@@ -22,6 +22,7 @@ export class ManageBudgetComponent implements OnInit {
   year: number;
 
   totalBudget;
+  noBudget: boolean = false;
   monthlyIncome: number;
   errorMessage;
 
@@ -58,7 +59,11 @@ export class ManageBudgetComponent implements OnInit {
         budget.amount = data[key].amount;
         budget.category = data[key].category;
         this.budgetItems.push(budget);
-      })
+      });
+
+      if (this.budgetItems.length == 0) {
+        this.noBudget = true;
+      }
     })
   }
 
