@@ -1,6 +1,8 @@
 <div class="header">
-  <a href="dashboard"><i class="fa fa-home"></i> Dashboard</a>
-  <a href="manage-budget"><i class="fa fa-money" aria-hidden="true"></i> Budget</a>
-  <a href="spending"><i class="fa fa-line-chart" aria-hidden="true"></i> Spending</a>
-  <button *ngIf="isLoggedIn()" (click)="logout()">Logout</button>
+  <ng-container *ngIf="isLoggedIn()">
+    <a href="dashboard">Dashboard</a>
+    <a href="manage-budget">Budget</a>
+    <a href="spending">Spending</a>
+    <button *ngIf="isLoggedIn()" (click)="logout()">Logout</button>
+  </ng-container>
 </div>
