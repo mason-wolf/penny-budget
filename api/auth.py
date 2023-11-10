@@ -1,10 +1,16 @@
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.message import EmailMessage
 from functools import wraps
 import json
+import smtplib
+import ssl
 from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import create_access_token
 from dao import user_dao as userDb
 import bcrypt
 from flask_jwt_extended import get_jwt_identity
+import uuid
 
 auth_blueprint = Blueprint('auth', __name__,)
 
@@ -32,23 +38,23 @@ def login():
 def reset_password():
     payload = request.data
     payload = json.loads(payload)
-    username = payload["username"]
-    old_password = payload["old_password"]
-    new_password = payload["new_password"]
-    user = userDb.get_user(username)
+    email = payload["email"]
+    user = userDb.get_user(email)
     result = {}
     if "error" not in user:
-        # Check if submitted password is correct.
-        result = check_password(user["password"], old_password)
-        if (result == False):
-            result = {"error" : "Incorrect password."}
-        else:
-            # Otherwise reset password.
-            new_password = new_password.encode('utf-8')
-            salt = bcrypt.gensalt(prefix=b"2a")
-            hash = bcrypt.hashpw(new_password, salt)
-            userDb.reset_password(username, hash)
-            result = {"status" : "success", "message" : "Password reset for " + username }
+        reset_link = uuid.uuid4()
+        send_email(email, reset_link)
+        # # Check if submitted password is correct.
+        # result = check_password(user["password"], old_password)
+        # if (result == False):
+        #     result = {"error" : "Incorrect password."}
+        # else:
+        #     # Otherwise reset password.
+        #     new_password = new_password.encode('utf-8')
+        #     salt = bcrypt.gensalt(prefix=b"2a")
+        #     hash = bcrypt.hashpw(new_password, salt)
+        #     userDb.reset_password(username, hash)
+        #     result = {"status" : "success", "message" : "Password reset for " + username }
     return jsonify(result)
 
 def check_password(user_password, provided_password):
@@ -75,3 +81,31 @@ def requires_auth(f):
           abort(401)
         return f(*args, **kwargs)
     return decorated
+
+def send_email(recipient, reset_link):
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "DoggyDime - Password Reset"
+    message["From"] = "support@doggydime.com"
+    message["To"] = recipient
+
+    html = """\
+    <html>
+      <body>
+      Click <a href="www.doggydime.com/reset-password/""" + str(reset_link.hex) + """">here</a> to reset your password.
+      </body>
+    </html>
+    """
+
+    part2 = MIMEText(html, 'html')
+
+    message.attach(part2)
+
+    with smtplib.SMTP("smtp.office365.com", 587) as server:
+        server.starttls()
+        server.ehlo()
+        server.login("support@doggydime.com", "")
+        server.sendmail(
+            "support@doggydime.com", recipient, message.as_string()
+        )
+
+

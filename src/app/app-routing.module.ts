@@ -19,6 +19,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   { path: 'spending', component: SpendingComponent, canActivate: [AuthGuard]},
   { path: 'reset-password', component: ResetPasswordComponent},
+  { path: 'reset-password/:resetLink', component: ResetPasswordComponent},
   { path: 'account-activity', component: AccountActivityComponent, canActivate: [AuthGuard]},
   { path: 'manage-budget', component: ManageBudgetComponent, canActivate: [AuthGuard]},
   { path: 'budget-history/:month/:year', component: BudgetHistoryComponent, canActivate: [AuthGuard]}

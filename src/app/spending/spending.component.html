@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <div class="row justify-content-center">
+  <div class="row">
     <div class="col-11 m-5">
       <nav aria-label="breadcrumb" style="margin-top:-25px;margin-left:-15px;">
         <ol class="breadcrumb" style="background-color: white;">
@@ -7,15 +7,15 @@
           <li class="breadcrumb-item active" aria-current="page">Spending</li>
         </ol>
       </nav>
-      <div class="col-md-12 order-1 order-md-1" *ngIf="spendingItems.length == 0 && !noSpending" style="text-align: center;margin-top:100px;">
+      <div class="col-md-12 order-1 order-md-1" *ngIf="spendingItems.length == 0 && !noSpending" style="text-align: center;margin-top:100px;padding:2em">
         <img src="assets/loading.gif">
       </div>
-      <div class="col-12 mr-1 order-1 justify-content-center" *ngIf="pieChart.data[0].dataPoints.length > 0">
+      <div class="col-12 mr-1 order-1" *ngIf="pieChart.data[0].dataPoints.length > 0" style="padding:0">
         <h1>{{ date | date: 'MMMM' }} Spending</h1>
         <canvasjs-chart [options]="pieChart" style="position:relative !important;"></canvasjs-chart>
       </div>
     </div>
-    <div class="col-md-5 order-1 budgetProgress">
+    <div class="col-md-6 border-1 budgetProgress" style="padding:3.7em;">
       <h1 style="margin-bottom:25px;">Budget History</h1>
       <select [(ngModel)]="selectedArchive" name="selectedArcive">
         <option *ngFor="let budget of budgetHistory" [ngValue]="budget">{{ budget | date: 'MMMM YYYY' }}</option>
@@ -23,7 +23,7 @@
       <button (click)="viewSelectedArchive()">View</button><br><br><br><br>
     </div>
     <!-- Spending History -->
-    <div class="col-md-6 order-1 budgetProgress">
+    <div class="col-md-6 order-1 budgetProgress" style="padding: 3.7em;">
       <h1>Spending History</h1>
       <select [(ngModel)]="selectedCategory" name="selectedCategory">
         <option *ngFor="let category of categories" [ngValue]="category">{{ category.title }}</option>
@@ -36,9 +36,9 @@
       <button (click)="viewSpendingHistory()">View</button>
     </div>
     <div class="col-10 mr-1 order-1 budgetProgress"
-      style="padding: 0em !important;margin-bottom: 100px;">
+      style="padding-left: 4em !important;margin-bottom: 100px;">
       <canvasjs-chart *ngIf="barChart.data[0].dataPoints.length > 0" [options]="barChart"
-        style="position:relative !important;margin-left:125px !important;width:100%;"></canvasjs-chart>
+        style="position:relative !important;width:100%;"></canvasjs-chart>
     </div>
   </div>
 </div>

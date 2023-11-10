@@ -35,13 +35,14 @@ export class SpendingComponent implements OnInit {
         type: "doughnut",
         startAngle: 60,
         //innerRadius: 60,
+        indexLabelFontFamily: "Urbanist",
         indexLabelFontSize: 17,
         indexLabel: "{label} - #percent%",
         toolTipContent: "<b>{label}:</b> {y} (#percent%)",
         dataPoints: [
         ],
       },
-    ],
+    ]
   };
 
   barChart = {
@@ -56,7 +57,6 @@ export class SpendingComponent implements OnInit {
     data: [{
       type: "column",
       showInLegend: true,
-      legendMarkerColor: "grey",
       legendText: "",
       dataPoints: []
     }]
@@ -94,12 +94,13 @@ export class SpendingComponent implements OnInit {
           {
             type: "doughnut",
             startAngle: 60,
-            indexLabelFontSize: 17,
+            indexLabelFontFamily: "Urbanist",
+            indexLabelFontSize: 20,
             indexLabel: "{label} - #percent%",
-            toolTipContent: "<b>{label}:</b> ${y} (#percent%)",
+            toolTipContent: "<span style='font-family:Urbanist;'><b>{label}:</b> ${y} (#percent%)</span>",
             dataPoints: options
           },
-        ],
+        ]
       }
     });
 
@@ -144,9 +145,8 @@ export class SpendingComponent implements OnInit {
       },
       data: [{
         type: "column",
-        showInLegend: true,
-        legendMarkerColor: "white",
-        legendText: legendText + " Spending",
+        showInLegend: false,
+        legendText: "  ",
         dataPoints: data
       }]
     }

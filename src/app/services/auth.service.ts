@@ -30,8 +30,8 @@ export class AuthService {
     return this.httpClient.post(environment.apiEndpoint + "/users", JSON.stringify({username: username, password : password}));
   }
 
-  resetPassword(username: string, old_password: string, new_password) {
-    return this.httpClient.post(environment.apiEndpoint + "/reset-password", JSON.stringify({username, old_password, new_password}))
+  resetPassword(email: string) {
+    return this.httpClient.post(environment.apiEndpoint + "/reset-password", JSON.stringify({email}))
   }
 
   logout() {
