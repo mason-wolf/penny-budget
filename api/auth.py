@@ -7,7 +7,8 @@ import smtplib
 import ssl
 from flask import Blueprint, jsonify, request, abort
 from flask_jwt_extended import create_access_token
-from dao import user_dao as userDb
+from dao import user_dao as user_dao
+from dao import account_dao as account_dao
 import bcrypt
 from flask_jwt_extended import get_jwt_identity
 import uuid
@@ -21,7 +22,7 @@ def login():
     payload = json.loads(payload)
     username = payload["username"]
     try:
-      user = userDb.get_user(username)
+      user = user_dao.get_user(username)
       user_password = user["password"]
       provided_password = payload["password"]
     except Exception as e:
@@ -35,27 +36,32 @@ def login():
              return jsonify({"error": "Bad username or password"})
 
 @auth_blueprint.route('/reset-password', methods=['POST'])
-def reset_password():
+def reset_password_request():
     payload = request.data
     payload = json.loads(payload)
     email = payload["email"]
-    user = userDb.get_user(email)
+    user = user_dao.get_user(email)
     result = {}
     if "error" not in user:
         reset_link = uuid.uuid4()
-        send_email(email, reset_link)
-        # # Check if submitted password is correct.
-        # result = check_password(user["password"], old_password)
-        # if (result == False):
-        #     result = {"error" : "Incorrect password."}
-        # else:
-        #     # Otherwise reset password.
-        #     new_password = new_password.encode('utf-8')
-        #     salt = bcrypt.gensalt(prefix=b"2a")
-        #     hash = bcrypt.hashpw(new_password, salt)
-        #     userDb.reset_password(username, hash)
-        #     result = {"status" : "success", "message" : "Password reset for " + username }
+        set_password_reset_id(email, reset_link.hex)
     return jsonify(result)
+
+@auth_blueprint.route('/reset-password-validated', methods=['POST'])
+def reset_password():
+    payload = request.data
+    payload = json.loads(payload)
+    password_reset_id = payload["password_reset_id"]
+    new_password = payload["new_password"]
+    new_password = new_password.encode('utf-8')
+    salt = bcrypt.gensalt(prefix=b"2a")
+    hash = bcrypt.hashpw(new_password, salt)
+    result= user_dao.reset_password(password_reset_id, hash)
+    return jsonify(result)
+
+@auth_blueprint.route('/reset-password/<password_reset_id>', methods=['GET'])
+def reset_password_with_reset_id(password_reset_id):
+    return validate_password_reset_id(password_reset_id)
 
 def check_password(user_password, provided_password):
     """
@@ -66,6 +72,25 @@ def check_password(user_password, provided_password):
     provided_password = provided_password.encode('utf-8')
     result = bcrypt.checkpw(provided_password, user_password)
     return result
+
+def set_password_reset_id(username, password_reset_id):
+    """
+    Assigns a temporary password reset ID.\n
+    If valid, allows user to reset password.\n
+    :params: username
+    :password_reset_id: GUID Generated from password reset request
+    """
+    result = account_dao.set_password_reset_id(username, password_reset_id)
+    return jsonify(result)
+
+def validate_password_reset_id(password_reset_id):
+    """
+    Checks to see if a password reset id is valid.\n
+    If valid, allows user to reset password.\n
+    :params: password_reset_id
+    """
+    result = account_dao.validate_password_reset_id(password_reset_id)
+    return jsonify(result)
 
 def requires_auth(f):
     """
@@ -82,7 +107,12 @@ def requires_auth(f):
         return f(*args, **kwargs)
     return decorated
 
-def send_email(recipient, reset_link):
+def send_password_reset_link(recipient, reset_link):
+    """
+    Sends password reset link.\n
+    :params: recipient - Recipient's Email
+    :params: reset_link - Unique GUUID for request
+    """
     message = MIMEMultipart("alternative")
     message["Subject"] = "DoggyDime - Password Reset"
     message["From"] = "support@doggydime.com"
@@ -91,7 +121,7 @@ def send_email(recipient, reset_link):
     html = """\
     <html>
       <body>
-      Click <a href="www.doggydime.com/reset-password/""" + str(reset_link.hex) + """">here</a> to reset your password.
+      Click <a href="www.doggydime.com/reset-password/""" + str(reset_link) + """">here</a> to reset your password.
       </body>
     </html>
     """

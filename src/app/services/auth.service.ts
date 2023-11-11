@@ -30,8 +30,27 @@ export class AuthService {
     return this.httpClient.post(environment.apiEndpoint + "/users", JSON.stringify({username: username, password : password}));
   }
 
+  /**
+   * Request to reset password. Sends password reset id to user's email.
+   * @param email
+   * @returns
+   */
   resetPassword(email: string) {
     return this.httpClient.post(environment.apiEndpoint + "/reset-password", JSON.stringify({email}))
+  }
+
+  /**
+   * If a valid password reset id is provided, reset password.
+   * @param newPassword
+   * @param resetId
+   * @returns
+   */
+  resetPasswordValidated(newPassword: string, resetId: string) {
+    return this.httpClient.post(environment.apiEndpoint + "/reset-password-validated",
+    JSON.stringify({new_password: newPassword, password_reset_id: resetId}));
+  }
+  validatePasswordResetId(passwordResetId: string) {
+    return this.httpClient.get<[]>(environment.apiEndpoint + "/reset-password/" + passwordResetId);
   }
 
   logout() {

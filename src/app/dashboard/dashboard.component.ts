@@ -86,12 +86,6 @@ export class DashboardComponent implements OnInit {
       ]),
       "transactionDate": new FormControl(this.transactionDate)
     });
-
-    this.getAccount();
-    this.getIncome();
-    this.getBudget();
-    this.getSpent();
-    this.getCategories();
   }
 
   // Get account balance and account name.
@@ -292,7 +286,6 @@ export class DashboardComponent implements OnInit {
       }
 
       this.accountService.addTransaction(this.userId, transaction).subscribe(resp => {
-        console.log(resp)
         this.snackBar.open("Transaction added.", "OK", {"duration" : 2000});
         this.getAccount();
         this.getBudget();
@@ -336,6 +329,11 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getAccount();
+    this.getIncome();
+    this.getBudget();
+    this.getSpent();
+    this.getCategories();
   }
 
 }

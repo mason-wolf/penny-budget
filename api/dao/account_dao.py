@@ -151,3 +151,13 @@ def get_balance(username):
 def update_balance(username, balance):
     query = "update accounts set balance=%s where accountOwner=%s and isPrimary=1"
     db.execute_CUD(query, ((balance, username,)))
+
+def set_password_reset_id(username, password_reset_id):
+    query = "update accounts set passwordResetId=%s where accountOwner=%s"
+    result = db.execute_CUD(query, ((password_reset_id, username)))
+    return result
+
+def validate_password_reset_id(password_reset_id):
+    query = "select * from accounts where passwordResetId=%s"
+    result = db.execute_query(query, (password_reset_id,))
+    return result

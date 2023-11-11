@@ -21,7 +21,12 @@ def get_user_by_id(userId):
     else:
         return {"error" : "User not found."}
 
-def reset_password(username, password):
+def reset_password(passwordResetId, hashed_password):
+    user_query = "SELECT accountOwner FROM accounts where passwordResetId=%s"
+    user = db.execute_query(user_query, (passwordResetId,))
     query = "update users set password=%s where username=%s"
-    result = db.execute_CUD(query, ((password, username,)))
+    result = db.execute_CUD(query, ((hashed_password, user[0]["accountOwner"],)))
+    reset_id_query = "update accounts set passwordResetId=null where accountOwner=%s"
+    db.execute_CUD(reset_id_query, (user[0]["accountOwner"],))
     return result
+
