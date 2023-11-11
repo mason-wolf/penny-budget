@@ -12,10 +12,12 @@
       </div>
       <div class="col-12 mr-1 order-1" *ngIf="pieChart.data[0].dataPoints.length > 0" style="padding:0">
         <h1>{{ date | date: 'MMMM' }} Spending</h1>
-        <canvasjs-chart [options]="pieChart" style="position:relative !important;"></canvasjs-chart>
+        <div class="col-12" style="margin-top:50px;">
+          <canvasjs-chart [options]="pieChart" style="position:relative !important;"></canvasjs-chart>
+        </div>
       </div>
     </div>
-    <div class="col-md-6 border-1 budgetProgress" style="padding:3.7em;">
+    <div class="col-md-6 border-1 budgetProgress" style="padding:3.7em;margin-top:-25px;">
       <h1 style="margin-bottom:25px;">Budget History</h1>
       <select [(ngModel)]="selectedArchive" name="selectedArcive">
         <option *ngFor="let budget of budgetHistory" [ngValue]="budget">{{ budget | date: 'MMMM YYYY' }}</option>
@@ -23,7 +25,7 @@
       <button (click)="viewSelectedArchive()">View</button><br><br><br><br>
     </div>
     <!-- Spending History -->
-    <div class="col-md-6 order-1 budgetProgress" style="padding: 3.7em;">
+    <div class="col-md-6 order-1 budgetProgress" style="padding: 3.7em;margin-top:-25px;">
       <h1>Spending History</h1>
       <select [(ngModel)]="selectedCategory" name="selectedCategory">
         <option *ngFor="let category of categories" [ngValue]="category">{{ category.title }}</option>

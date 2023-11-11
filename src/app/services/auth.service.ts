@@ -56,6 +56,8 @@ export class AuthService {
   logout() {
     let token = localStorage.removeItem('access_token');
     sessionStorage.removeItem('username');
+    localStorage.removeItem('access_token');
+    sessionStorage.removeItem('username');
     if (token == null) {
       this.router.navigate(['']);
     }

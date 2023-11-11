@@ -95,7 +95,7 @@ export class SpendingComponent implements OnInit {
             type: "doughnut",
             startAngle: 60,
             indexLabelFontFamily: "Urbanist",
-            indexLabelFontSize: 20,
+            indexLabelFontSize: 18,
             indexLabel: "{label} - #percent%",
             toolTipContent: "<span style='font-family:Urbanist;'><b>{label}:</b> ${y} (#percent%)</span>",
             dataPoints: options

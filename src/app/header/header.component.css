@@ -6,7 +6,7 @@
 }
 
 .header a {
-  color: rgb(228, 228, 228);
+  color: rgb(212, 212, 212);
   margin-left: 25px;
   font-weight: 700;
   letter-spacing: .5px;
@@ -19,4 +19,11 @@
 button {
     color: white;
     float: right;
+    background-color: rgb(58, 65, 112);
+    box-shadow: none;
+    border: none;
+}
+
+button:hover {
+  background-color: rgb(68, 76, 128);
 }
