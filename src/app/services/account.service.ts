@@ -20,7 +20,7 @@ export class AccountService {
   }
 
   getMonthlySpendingByTimeframe(userId: string, category: string, interval: Number) {
-    return this.httpClient.get(environment.apiEndpoint + "/account/" + userId + "/spending-history/" +
+    return this.httpClient.get<[]>(environment.apiEndpoint + "/account/" + userId + "/spending-history/" +
     category + "/" + interval + "/")
   }
 

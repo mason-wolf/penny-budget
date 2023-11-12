@@ -25,6 +25,7 @@ export class SpendingComponent implements OnInit {
 
   spendingItems: any[] = [];
   noSpending: boolean = false;
+  noSpendingHistory: boolean = false;
 
   pieChart = {
     title: {
@@ -118,18 +119,22 @@ export class SpendingComponent implements OnInit {
   }
 
   viewSpendingHistory() {
-    this.renderBarChart(null, null);
     this.accountService.getMonthlySpendingByTimeframe(this.userId, this.selectedCategory.title, this.selectedTimeFrame).subscribe(resp => {
-      let options = [];
-      let category = "";
-      for (var d in resp) {
-        let amount = resp[d]["amount"];
-        let date = this.datePipe.transform(resp[d]["date"], 'MMMM')
-        category = resp[d]["category"];
-        let chartItem = { y: amount, label: date};
-        options.push(chartItem);
+      if (resp.length > 0) {
+        let options = [];
+        let category = "";
+        for (var d in resp) {
+          let amount = resp[d]["amount"];
+          let date = this.datePipe.transform(resp[d]["date"], 'MMMM')
+          category = resp[d]["category"];
+          let chartItem = { y: amount, label: date};
+          options.push(chartItem);
+          this.renderBarChart(options, this.selectedCategory.title);
+        }
       }
-      this.renderBarChart(options, this.selectedCategory.title);
+      else {
+        this.noSpendingHistory = true;
+      }
     });
   }
 

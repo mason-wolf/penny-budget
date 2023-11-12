@@ -10,17 +10,15 @@
       <div class="col-md-12 order-1 order-md-1" *ngIf="spendingItems.length == 0 && !noSpending" style="text-align: center;margin-top:100px;padding:2em">
         <img src="assets/loading.gif">
       </div>
-      <div class="col-12 mr-1 order-1" *ngIf="pieChart.data[0].dataPoints.length > 0; else noSpending" style="padding:0">
+      <div class="col-12 mr-1 order-1" *ngIf="pieChart.data[0].dataPoints.length > 0" style="padding:0">
         <h1>{{ date | date: 'MMMM' }} Spending</h1>
         <div class="col-12" style="margin-top:50px;">
           <canvasjs-chart [options]="pieChart" style="position:relative !important;"></canvasjs-chart>
         </div>
       </div>
-      <ng-template #noSpending>
-        <div class="col-md-12 noSpending">
+        <div class="col-md-12 noSpending" *ngIf="noSpending">
           You don't have any transactions for this month.
         </div>
-      </ng-template>
     </div>
     <div class="col-md-6 border-1 budgetProgress" style="padding:3.7em;margin-top:-50px;">
       <h1 style="margin-bottom:25px;">Budget History</h1>
@@ -40,11 +38,14 @@
         <option value="6">6 Months</option>
         <option value="12">1 Year</option>
       </select>
+      <div class="col-10" *ngIf="noSpendingHistory" style="padding:0;margin: 0;">
+        No transactions for this period.
+      </div>
       <button (click)="viewSpendingHistory()">View</button>
     </div>
     <div class="col-10 mr-1 order-1 budgetProgress"
-      style="padding-left: 4em !important;margin-bottom: 100px;">
-      <canvasjs-chart *ngIf="barChart.data[0].dataPoints.length > 0" [options]="barChart"
+      style="padding-left: 4em !important;margin-bottom: 100px;" *ngIf="barChart.data[0].dataPoints.length > 0">
+      <canvasjs-chart [options]="barChart"
         style="position:relative !important;width:100%;"></canvasjs-chart>
     </div>
   </div>
