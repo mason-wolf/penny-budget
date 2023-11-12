@@ -10,3 +10,9 @@ td, tr, .mat-header-row, .mat-header-row {
 table {
     border-spacing: 0px;
 }
+
+:host ::ng-deep.mat-paginator .mat-paginator-container button, button:hover {
+  border:none;
+  background-color: white;
+  box-shadow: none;
+}
