@@ -10,14 +10,19 @@
       <div class="col-md-12 order-1 order-md-1" *ngIf="spendingItems.length == 0 && !noSpending" style="text-align: center;margin-top:100px;padding:2em">
         <img src="assets/loading.gif">
       </div>
-      <div class="col-12 mr-1 order-1" *ngIf="pieChart.data[0].dataPoints.length > 0" style="padding:0">
+      <div class="col-12 mr-1 order-1" *ngIf="pieChart.data[0].dataPoints.length > 0; else noSpending" style="padding:0">
         <h1>{{ date | date: 'MMMM' }} Spending</h1>
         <div class="col-12" style="margin-top:50px;">
           <canvasjs-chart [options]="pieChart" style="position:relative !important;"></canvasjs-chart>
         </div>
       </div>
+      <ng-template #noSpending>
+        <div class="col-md-12 noSpending">
+          You don't have any transactions for this month.
+        </div>
+      </ng-template>
     </div>
-    <div class="col-md-6 border-1 budgetProgress" style="padding:3.7em;margin-top:-25px;">
+    <div class="col-md-6 border-1 budgetProgress" style="padding:3.7em;margin-top:-50px;">
       <h1 style="margin-bottom:25px;">Budget History</h1>
       <select [(ngModel)]="selectedArchive" name="selectedArcive">
         <option *ngFor="let budget of budgetHistory" [ngValue]="budget">{{ budget | date: 'MMMM YYYY' }}</option>
@@ -25,7 +30,7 @@
       <button (click)="viewSelectedArchive()">View</button><br><br><br><br>
     </div>
     <!-- Spending History -->
-    <div class="col-md-6 order-1 budgetProgress" style="padding: 3.7em;margin-top:-25px;">
+    <div class="col-md-6 order-1 budgetProgress" style="padding: 3.7em;margin-top:-50px;">
       <h1>Spending History</h1>
       <select [(ngModel)]="selectedCategory" name="selectedCategory">
         <option *ngFor="let category of categories" [ngValue]="category">{{ category.title }}</option>
