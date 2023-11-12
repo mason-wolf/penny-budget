@@ -79,6 +79,16 @@ def add_budget(id):
     budget_dao.add_budget(transaction)
     return jsonify("Budget added.")
 
+@budget_blueprint.route('/budget/<id>', methods=['PUT'])
+@jwt_required()
+@requires_auth
+def update_budget_item(id):
+    payload = request.data
+    payload = json.loads(payload)
+    budget_id = payload["budget_id"]
+    budget_amount = payload["budget_amount"]
+    return jsonify(budget_dao.update_budget_item(budget_id, budget_amount))
+
 @budget_blueprint.route('/budget/<id>', methods=["DELETE"])
 @jwt_required()
 @requires_auth

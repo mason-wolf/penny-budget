@@ -4,10 +4,12 @@ body {
     margin: 0;
     font-family: 'Urbanist', sans-serif;
     font-weight: 400;
+    caret-color: transparent;
 
 }
 
 input, select {
+  caret-color: black;
     width: 100%;
     font-size: 18px;
     font-weight: 400;

@@ -110,3 +110,8 @@ def delete_category(userId, categoryId):
     query = "delete from budgetCategories where id= %s and owner=%s"
     db.execute_CUD(query, (categoryId, user["username"],))
     return "Category deleted."
+
+def update_budget_item(budgetId, budgetAmount):
+    query = "update budgets set amount=%s where id=%s"
+    db.execute_CUD(query, (budgetAmount, budgetId,))
+    return "Budget item updated"

@@ -6,6 +6,7 @@ import { Budget } from '../shared/models/budget.model';
 import { Category } from '../shared/models/category.model';
 import { Transaction } from '../shared/models/transaction.model';
 import { AccountService } from '../services/account.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-manage-budget',
@@ -29,10 +30,13 @@ export class ManageBudgetComponent implements OnInit {
   categories : Category[] = [];
   budgetAmount: number;
   budgetCategory: string;
+  budgetToEdit: Budget;
+  editBudgetForm: FormGroup;
   categoryToRemove: Category;
 
   @ViewChild('setIncomeDialog') setIncomeDialog: TemplateRef<any>;
   @ViewChild('addBudgetDialog') addBudgetDialog: TemplateRef<any>;
+  @ViewChild('editBudgetDialog') editBudgetDialog: TemplateRef<any>;
   @ViewChild('manageCategoryDialog') manageCategoryDialog: TemplateRef<any>;
 
   constructor(
@@ -48,6 +52,13 @@ export class ManageBudgetComponent implements OnInit {
     this.getCategories();
     this.getTotalBudget();
     this.getIncome();
+
+    this.editBudgetForm = new FormGroup({
+      "budgetAmount" : new FormControl(this.budgetAmount, [
+        Validators.required,
+        Validators.pattern(/\-?\d*\.?\d{1,2}/)
+      ])
+    })
   }
 
   getBudget() {
@@ -124,6 +135,19 @@ export class ManageBudgetComponent implements OnInit {
     });
   }
 
+  updateBudgetItem() {
+    if (!this.editBudgetForm.get('budgetAmount').invalid) {
+      this.budgetToEdit.amount = this.editBudgetForm.get('budgetAmount').value;
+      this.budgetService.updateBudget(this.userId, this.budgetToEdit.id, this.budgetToEdit.amount).subscribe(res => {
+        this.getTotalBudget();
+      })
+      this.dialog.closeAll();
+    }
+    else {
+      this.errorMessage = "Please enter a valid amount.";
+    }
+  }
+
   updateIncome() {
     let valid = false;
     let validator: RegExp = /^[0-9].*$/;
@@ -131,21 +155,28 @@ export class ManageBudgetComponent implements OnInit {
     if (this.monthlyIncome != null && validator.test(this.monthlyIncome.toString())) {
       valid = true;
       this.dialog.closeAll();
-   //   localStorage.setItem("monthlyIncome", this.monthlyIncome.toString());
       this.accountService.updateMonthlyIncome(this.userId, this.monthlyIncome).subscribe(resp => {
-        console.log(resp);
+        this.calculateSavings(this.monthlyIncome, this.totalBudget);
       })
     }
     return valid;
   }
+
+  showEditBudgetDialog(budget: Budget) {
+    this.editBudgetForm.patchValue({budgetAmount: budget.amount});
+    this.budgetToEdit = budget;
+    this.dialog.open(this.editBudgetDialog, {
+      minWidth: '30%',
+      maxWidth: '100%'
+    })
+  }
+
 
   showIncomeDialog() {
     this.dialog.open(this.setIncomeDialog, {
       minWidth: '30%',
       maxWidth: '100%'
     })
-
-    this.monthlyIncome = null;
   }
 
   calculateSavings(monthlyIncome, totalBudget) {

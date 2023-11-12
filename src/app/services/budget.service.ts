@@ -57,6 +57,11 @@ export class BudgetService {
     return this.httpClient.delete(environment.apiEndpoint + '/category/' + userId, options);
   }
 
+  updateBudget(userId:string, budgetId: number, budgetAmount: number) {
+    return this.httpClient.put(environment.apiEndpoint + "/budget/" +
+    userId, { budget_id: budgetId, budget_amount: budgetAmount})
+  }
+
   deleteBudget(userId: string, budgetId: number) {
     const options = {
       headers: new HttpHeaders({
