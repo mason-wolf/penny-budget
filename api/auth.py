@@ -17,7 +17,6 @@ auth_blueprint = Blueprint('auth', __name__,)
 
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
-
     payload = request.data
     payload = json.loads(payload)
     username = payload["username"]
@@ -30,6 +29,7 @@ def login():
     valid_login = check_password(user_password, provided_password)
     if (provided_password) is not None:
         if (valid_login):
+            user_dao.update_last_login(username)
             access_token = create_access_token(identity=user['id'])
             return jsonify(access_token=access_token, username=payload["username"], userId=user["id"])
         else:

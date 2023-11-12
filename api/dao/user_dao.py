@@ -1,4 +1,5 @@
 import db
+from datetime import datetime
 
 def add_user(username, password):
     query = "insert into users (username, password, enabled, user_token) values (%s, %s, %s, %s)"
@@ -28,5 +29,11 @@ def reset_password(passwordResetId, hashed_password):
     result = db.execute_CUD(query, ((hashed_password, user[0]["accountOwner"],)))
     reset_id_query = "update accounts set passwordResetId=null where accountOwner=%s"
     db.execute_CUD(reset_id_query, (user[0]["accountOwner"],))
+    return result
+
+def update_last_login(username):
+    query = "UPDATE users set lastLogin=%s WHERE username=%s"
+    currentDate = datetime.today().strftime('%Y-%m-%d')
+    result = db.execute_CUD(query, (currentDate, username,))
     return result
 

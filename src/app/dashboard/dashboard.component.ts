@@ -176,6 +176,7 @@ export class DashboardComponent implements OnInit {
 
       if (this.budgetItems.length == 0) {
         this.noBudget = true;
+        this.amountSpent = formatCurrency(0, 'en', '$');
       }
       else {
         this.loadingBudget = true;

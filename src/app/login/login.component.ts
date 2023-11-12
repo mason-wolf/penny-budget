@@ -16,6 +16,8 @@ export class LoginComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router, private accountService: AccountService) {
     this.setLoginForm();
+    sessionStorage.removeItem('username');
+    localStorage.removeItem('access_token');
    }
 
   setLoginForm() {
