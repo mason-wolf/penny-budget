@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Transaction } from '../shared/models/transaction.model';
+import { Budget } from '../shared/models/budget.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class BudgetService {
   }
 
   getBudgetByCategory(userId: string, month: number, year: number) {
-    return this.httpClient.get(environment.apiEndpoint + '/budget/' + userId + "/" + year + "/" + month);
+    return this.httpClient.get<Budget[]>(environment.apiEndpoint + '/budget/' + userId + "/" + year + "/" + month);
   }
 
   getBudgetHistory(userId) {

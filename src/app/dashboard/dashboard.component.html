@@ -31,29 +31,34 @@
         You don't have a budget yet for {{ date | date: 'MMMM'}}!<br>
         <a href="manage-budget">Create a budget</a> to get started.
       </div>
-      <div *ngFor="let budget of budgetItems">
-        <div *ngFor="let transaction of transactions">
-          <div *ngIf="budget.category == transaction.category" class="budgetContainer">
-            <div class="col-12" style="padding:0;margin-bottom:-8px;">
-              <span class="budget-category">{{budget.category}}</span>
-              <span style="float:right;" class="money">{{ transaction.amount | currency }} of {{ budget.amount |
-                currency}}</span>
-            </div>
-            <div class="budgetItem">
-              <div *ngIf="transaction.amount <= (budget.amount / 2) || transaction.amount == budget.amount" class="budgetStatus"
-                style="background-color: rgb(117, 182, 119);"
-                [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
-              <div *ngIf="transaction.amount >= (budget.amount * 0.75) && transaction.amount < budget.amount"
-                class="budgetStatus" style="background-color: rgb(224, 220, 159);"
-                [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
-              <div *ngIf="transaction.amount > (budget.amount)" class="budgetStatus"
-                style="background-color: #fcb3ab;"
-                [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;
+      <div class="col-md-12 order-1 order-md-1" *ngIf="loadingBudget; else showBudget" style="text-align: center;margin-top:100px;">
+        <img src="assets/loading.gif">
+      </div>
+      <ng-template #showBudget>
+        <div *ngFor="let budget of budgetItems">
+          <div *ngFor="let transaction of transactions">
+            <div *ngIf="budget.category == transaction.category" class="budgetContainer">
+              <div class="col-12" style="padding:0;margin-bottom:-8px;">
+                <span class="budget-category">{{budget.category}}</span>
+                <span style="float:right;" class="money">{{ transaction.amount | currency }} of {{ budget.amount |
+                  currency}}</span>
+              </div>
+              <div class="budgetItem">
+                <div *ngIf="transaction.amount <= (budget.amount / 2) || transaction.amount == budget.amount" class="budgetStatus"
+                  style="background-color: rgb(117, 182, 119);"
+                  [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
+                <div *ngIf="transaction.amount >= (budget.amount * 0.75) && transaction.amount < budget.amount"
+                  class="budgetStatus" style="background-color: rgb(224, 220, 159);"
+                  [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;</div>
+                <div *ngIf="transaction.amount > (budget.amount)" class="budgetStatus"
+                  style="background-color: #fcb3ab;"
+                  [ngStyle]="{'width' : transaction.amount / (budget.amount * 100) * 10000 + '%'}">&nbsp;
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </ng-template>
     </div>
   </div>
 </div>

@@ -30,6 +30,7 @@ export class DashboardComponent implements OnInit {
   transactions: Transaction[] = [];
   budgetItems: Budget[] = [];
   noBudget: boolean = false;
+  loadingBudget: boolean = false;
   errorMessage: string;
 
   // Income form fields
@@ -125,6 +126,7 @@ export class DashboardComponent implements OnInit {
           template.amount = 0;
           this.transactions.push(template);
         });
+        this.loadingBudget = false;
       }
       else {
         this.transactions = [];
@@ -144,19 +146,18 @@ export class DashboardComponent implements OnInit {
 
         // We want to show budget items even if nothing was spent this month
         // in each category.
-        let budgetTemplates = [];
+
         this.budgetItems.forEach(budgetItem => {
           let template = new Transaction();
           template.category = budgetItem.category;
           template.amount = 0;
           if (!this.transactions.find(e => e.category === template.category)) {
-            budgetTemplates.push(template);
+            this.transactions.push(template);
           }
         });
 
-        budgetTemplates.forEach(budgetTemplate => {
-          this.transactions.push(budgetTemplate);
-        });
+        this.loadingBudget = false;
+     //   console.log(this.transactions);
         // Format total spent.
         this.amountSpent = formatCurrency(totalSpent, 'en', '$');
       }
@@ -175,6 +176,10 @@ export class DashboardComponent implements OnInit {
 
       if (this.budgetItems.length == 0) {
         this.noBudget = true;
+      }
+      else {
+        this.loadingBudget = true;
+        this.getSpent();
       }
     })
   }
@@ -332,7 +337,7 @@ export class DashboardComponent implements OnInit {
     this.getAccount();
     this.getIncome();
     this.getBudget();
-    this.getSpent();
+  //  this.getSpent();
     this.getCategories();
   }
 
